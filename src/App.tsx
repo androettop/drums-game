@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import AudioPlayer from "./components/AudioPlayer/AudioPlayer";
 import Highway from "./components/Highway/Highway";
 import { loadFirstSong } from "./helpers/songLoader";
 import { SongData } from "./types/songs";
-import AudioPlayer from "./components/AudioPlayer/AudioPlayer";
 
 function App() {
   const [song, setSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
 
