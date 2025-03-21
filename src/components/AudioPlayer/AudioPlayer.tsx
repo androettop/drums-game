@@ -71,6 +71,8 @@ const AudioPlayer = ({
         // Guardar el primer reproductor como maestro para el tiempo
         if (index === 0) {
           masterPlayerRef.current = player;
+        } else if (masterPlayerRef.current) {
+            player.currentTime = masterPlayerRef.current.currentTime;
         }
       }
     });

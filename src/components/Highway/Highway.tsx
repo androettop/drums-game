@@ -63,8 +63,8 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
     return initialNotes;
   });
 
-  const getNotes = useStaticHandler(() => {
-    if (isPlaying) {
+  const getNotes = useStaticHandler((force: boolean = false) => {
+    if (isPlaying || force) {
       // add the anim delay to the current time
       const currentTime = time + CONFIG.ANIM_DURATION * 0.9; // 0.9 to reach the divider
 
@@ -97,7 +97,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
   });
 
   useEffect(() => {
-    getNotes();
+    getNotes(true);
     const interval = setInterval(() => {
       // load the notes 3 seconds before the current time and 3 seconds after
       getNotes();
