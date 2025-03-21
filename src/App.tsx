@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Highway from "./components/Highway/Highway";
 import { loadFirstSong } from "./helpers/songLoader";
 import { SongData } from "./types/songs";
@@ -8,6 +8,8 @@ function App() {
   const [song, setSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const currentTimeRef = useRef<number>(0);
 
   const handleSelectSongs = async () => {
     setLoading(true);
@@ -31,6 +33,16 @@ function App() {
     }
   };
 
+  // Manejador para actualizar el tiempo actual
+  const handleTimeUpdate = (time: number) => {
+    currentTimeRef.current = time;
+  };
+
+  // Manejador para actualizar el estado de reproducción
+  const handlePlayingChange = (playing: boolean) => {
+    setIsPlaying(playing);
+  };
+
   return (
     <div>
       <button onClick={handleSelectSongs} disabled={loading}>
@@ -41,8 +53,12 @@ function App() {
 
       {song ? (
         <>
-          <Highway song={song} />
-          <AudioPlayer song={song} />
+          <Highway song={song} isPlaying={isPlaying} />
+          <AudioPlayer 
+            song={song} 
+            onTimeUpdate={handleTimeUpdate} 
+            onPlayingChange={handlePlayingChange} 
+          />
         </>
       ) : (
         <div>

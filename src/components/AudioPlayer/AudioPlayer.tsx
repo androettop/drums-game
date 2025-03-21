@@ -4,12 +4,17 @@ import { loadAudioFile, releaseAudioUrl } from "../../helpers/audioLoader";
 
 interface AudioPlayerProps {
   song: SongData;
+  onTimeUpdate?: (time: number) => void; // Callback para actualizar el tiempo
+  onPlayingChange?: (isPlaying: boolean) => void; // Callback para actualizar el estado de reproducción
 }
 
-const AudioPlayer = ({ song }: AudioPlayerProps) => {
+const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) => {
   const playerRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const [trackUrls, setTrackUrls] = useState<(string | null)[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isPlaying = useRef<boolean>(false);
+  const animationFrameRef = useRef<number | null>(null);
+  const masterPlayerRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -38,15 +43,40 @@ const AudioPlayer = ({ song }: AudioPlayerProps) => {
     // Limpiar las URLs cuando el componente se desmonte
     return () => {
       trackUrls.forEach(url => releaseAudioUrl(url));
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [song]);
 
+  // Función para actualizar el tiempo utilizando requestAnimationFrame
+  const updateTime = () => {
+    if (masterPlayerRef.current && onTimeUpdate) {
+      onTimeUpdate(masterPlayerRef.current.currentTime);
+    }
+    
+    if (isPlaying.current) {
+      animationFrameRef.current = requestAnimationFrame(updateTime);
+    }
+  };
+
   const handlePlay = () => {
-    playerRefs.current.forEach(player => {
+    playerRefs.current.forEach((player, index) => {
       if (player) {
         player.play();
+        // Guardar el primer reproductor como maestro para el tiempo
+        if (index === 0) {
+          masterPlayerRef.current = player;
+        }
       }
     });
+    isPlaying.current = true;
+    // Iniciar la actualización del tiempo
+    animationFrameRef.current = requestAnimationFrame(updateTime);
+    // Notificar cambio de estado
+    if (onPlayingChange) {
+      onPlayingChange(true);
+    }
   };
 
   const handlePause = () => {
@@ -55,6 +85,16 @@ const AudioPlayer = ({ song }: AudioPlayerProps) => {
         player.pause();
       }
     });
+    isPlaying.current = false;
+    // Detener la actualización del tiempo
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    // Notificar cambio de estado
+    if (onPlayingChange) {
+      onPlayingChange(false);
+    }
   };
 
   const handleStop = () => {
@@ -64,6 +104,19 @@ const AudioPlayer = ({ song }: AudioPlayerProps) => {
         player.currentTime = 0;
       }
     });
+    isPlaying.current = false;
+    // Detener la actualización del tiempo y reiniciar a cero
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (onTimeUpdate) {
+      onTimeUpdate(0);
+    }
+    // Notificar cambio de estado
+    if (onPlayingChange) {
+      onPlayingChange(false);
+    }
   };
 
   return (
@@ -76,7 +129,7 @@ const AudioPlayer = ({ song }: AudioPlayerProps) => {
       </div>
       
       {/* Pistas de canción */}
-      {song.audioFileData.songTracks.map((track, index) => (
+      {song.audioFileData.songTracks.map((_track, index) => (
         <audio
           key={`song-${index}`}
           src={trackUrls[index] || ''}
@@ -88,7 +141,7 @@ const AudioPlayer = ({ song }: AudioPlayerProps) => {
       ))}
 
       {/* Pistas de batería */}
-      {song.audioFileData.drumTracks.map((track, index) => (
+      {song.audioFileData.drumTracks.map((_track, index) => (
         <audio
           key={`drum-${index}`}
           src={trackUrls[song.audioFileData.songTracks.length + index] || ''}
