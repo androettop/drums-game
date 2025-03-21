@@ -20,8 +20,8 @@ const INSTRUMENT_COLORS = {
   BP_Tom1_C: "#33FFAA", // turquesa
   BP_Tom2_C: "#118811", // verde oscuro
   BP_FloorTom_C: "#552288", // violeta
-  BP_Ride17_C: "#F5FF33", // amarillo
   BP_Crash17_C: "#FF5733", // naranja
+  BP_Ride17_C: "#F5FF33", // amarillo
   BP_Kick_C: "#3357FF", // azul
   BP_Crash15_C: "#FF33F5", // rosa
   BP_Ride20_C: "#FFAA33", // naranja claro
@@ -34,8 +34,8 @@ const ORDERED_INSTRUMENTS = [
   "BP_Tom1_C",
   "BP_Tom2_C",
   "BP_FloorTom_C",
-  "BP_Ride17_C",
   "BP_Crash17_C",
+  "BP_Ride17_C",
   "BP_Crash15_C",
   "BP_Ride20_C",
 ];
@@ -56,42 +56,47 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
   });
 
   const getNotes = useStaticHandler(() => {
-    const notesBatch = song.events.filter(
-      (note) =>
-        Number(note.time) >= time - CONFIG.NOTES_BATCH_LENGTH / 2 &&
-        Number(note.time) <= time + CONFIG.NOTES_BATCH_LENGTH / 2
-    );
-    const notesMap: Record<string, EventData[]> = {};
-
-    ORDERED_INSTRUMENTS.forEach((instrument) => {
-      notesMap[instrument] = [];
-    });
-    notesMap["BP_Kick_C"] = [];
-
-    notesBatch.forEach((event) => {
-      const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
-      notesMap[instrument].push({
-        ...event,
-        time: `${
-          Number(event.time) -
-          time +
-          CONFIG.NOTES_BATCH_LENGTH / 2 -
-          CONFIG.ANIM_DURATION
-        }`,
+    if(isPlaying) {
+      // add the anim delay to the current time
+      const currentTime = time + CONFIG.ANIM_DURATION * 0.9; // 0.9 to reach the divider 
+  
+      const notesBatch = song.events.filter(
+        (note) =>
+          Number(note.time) >= currentTime - CONFIG.NOTES_BATCH_LENGTH / 2 &&
+          Number(note.time) <= currentTime + CONFIG.NOTES_BATCH_LENGTH / 2
+      );
+      const notesMap: Record<string, EventData[]> = {};
+  
+      ORDERED_INSTRUMENTS.forEach((instrument) => {
+        notesMap[instrument] = [];
       });
-    });
-    console.log(notesMap);
-    setNotes(notesMap);
+      notesMap["BP_Kick_C"] = [];
+  
+      notesBatch.forEach((event) => {
+        const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
+        notesMap[instrument].push({
+          ...event,
+          time: `${
+            Number(event.time) -
+            currentTime +
+            CONFIG.NOTES_BATCH_LENGTH / 2
+            - CONFIG.ANIM_DURATION 
+          }`,
+        });
+      });
+      setNotes(notesMap);
+    }
   });
 
   useEffect(() => {
+    getNotes();
     const interval = setInterval(() => {
       // load the notes 3 seconds before the current time and 3 seconds after
       getNotes();
     }, CONFIG.BATCH_LOAD_FREQUENCY * 1000);
 
     return () => clearInterval(interval);
-  }, [song.events, getNotes]);
+  }, [song.events, getNotes, isPlaying]);
 
   return (
     <div>
