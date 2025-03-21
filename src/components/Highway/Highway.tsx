@@ -22,10 +22,18 @@ const INSTRUMENT_COLORS = {
   BP_FloorTom_C: "#552288", // violeta
   BP_Crash17_C: "#FF5733", // naranja
   BP_Ride17_C: "#F5FF33", // amarillo
-  BP_Kick_C: "#3357FF", // azul
+  BP_Kick_C: "#4054b6", // azul
   BP_Crash15_C: "#FF33F5", // rosa
   BP_Ride20_C: "#FFAA33", // naranja claro
 };
+
+const CIRCLE_INSTRUMENTS = [
+  "BP_HiHat_C",
+  "BP_Crash17_C",
+  "BP_Ride17_C",
+  "BP_Crash15_C",
+  "BP_Ride20_C",
+];
 
 // Crear un array de las clases de instrumento en el orden que aparecen en INSTRUMENT_COLORS
 const ORDERED_INSTRUMENTS = [
@@ -56,22 +64,22 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
   });
 
   const getNotes = useStaticHandler(() => {
-    if(isPlaying) {
+    if (isPlaying) {
       // add the anim delay to the current time
-      const currentTime = time + CONFIG.ANIM_DURATION * 0.9; // 0.9 to reach the divider 
-  
+      const currentTime = time + CONFIG.ANIM_DURATION * 0.9; // 0.9 to reach the divider
+
       const notesBatch = song.events.filter(
         (note) =>
           Number(note.time) >= currentTime - CONFIG.NOTES_BATCH_LENGTH / 2 &&
           Number(note.time) <= currentTime + CONFIG.NOTES_BATCH_LENGTH / 2
       );
       const notesMap: Record<string, EventData[]> = {};
-  
+
       ORDERED_INSTRUMENTS.forEach((instrument) => {
         notesMap[instrument] = [];
       });
       notesMap["BP_Kick_C"] = [];
-  
+
       notesBatch.forEach((event) => {
         const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
         notesMap[instrument].push({
@@ -79,8 +87,8 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
           time: `${
             Number(event.time) -
             currentTime +
-            CONFIG.NOTES_BATCH_LENGTH / 2
-            - CONFIG.ANIM_DURATION 
+            CONFIG.NOTES_BATCH_LENGTH / 2 -
+            CONFIG.ANIM_DURATION
           }`,
         });
       });
@@ -131,8 +139,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
               <div
                 key={note.time}
                 className={classNames(styles.note, {
-                  kick: instrument === "BP_Kick_C",
-                  hiHat: instrument === "BP_HiHat_C",
+                  [styles.circle]: CIRCLE_INSTRUMENTS.includes(instrument),
                 })}
                 style={{
                   backgroundColor:

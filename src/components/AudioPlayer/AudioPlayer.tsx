@@ -8,7 +8,11 @@ interface AudioPlayerProps {
   onPlayingChange?: (isPlaying: boolean) => void; // Callback para actualizar el estado de reproducción
 }
 
-const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) => {
+const AudioPlayer = ({
+  song,
+  onTimeUpdate,
+  onPlayingChange,
+}: AudioPlayerProps) => {
   const playerRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const [trackUrls, setTrackUrls] = useState<(string | null)[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,30 +23,30 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
   useEffect(() => {
     const loadTracks = async () => {
       setIsLoading(true);
-      
+
       // Cargar las pistas de canción
-      const songTrackPromises = song.audioFileData.songTracks.map(track => 
+      const songTrackPromises = song.audioFileData.songTracks.map((track) =>
         loadAudioFile(song, track)
       );
-      
+
       // Cargar las pistas de batería
-      const drumTrackPromises = song.audioFileData.drumTracks.map(track => 
+      const drumTrackPromises = song.audioFileData.drumTracks.map((track) =>
         loadAudioFile(song, track)
       );
-      
+
       // Esperar a que todas las pistas se carguen
       const songUrls = await Promise.all(songTrackPromises);
       const drumUrls = await Promise.all(drumTrackPromises);
-      
+
       setTrackUrls([...songUrls, ...drumUrls]);
       setIsLoading(false);
     };
-    
+
     loadTracks();
-    
+
     // Limpiar las URLs cuando el componente se desmonte
     return () => {
-      trackUrls.forEach(url => releaseAudioUrl(url));
+      trackUrls.forEach((url) => releaseAudioUrl(url));
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -54,7 +58,7 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
     if (masterPlayerRef.current && onTimeUpdate) {
       onTimeUpdate(masterPlayerRef.current.currentTime);
     }
-    
+
     if (isPlaying.current) {
       animationFrameRef.current = requestAnimationFrame(updateTime);
     }
@@ -80,7 +84,7 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
   };
 
   const handlePause = () => {
-    playerRefs.current.forEach(player => {
+    playerRefs.current.forEach((player) => {
       if (player) {
         player.pause();
       }
@@ -98,7 +102,7 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
   };
 
   const handleStop = () => {
-    playerRefs.current.forEach(player => {
+    playerRefs.current.forEach((player) => {
       if (player) {
         player.pause();
         player.currentTime = 0;
@@ -122,17 +126,23 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
   return (
     <div className="audio-player">
       <div className="controls">
-        <button onClick={handlePlay} disabled={isLoading}>Play</button>
-        <button onClick={handlePause} disabled={isLoading}>Pause</button>
-        <button onClick={handleStop} disabled={isLoading}>Stop</button>
+        <button onClick={handlePlay} disabled={isLoading}>
+          Play
+        </button>
+        <button onClick={handlePause} disabled={isLoading}>
+          Pause
+        </button>
+        <button onClick={handleStop} disabled={isLoading}>
+          Stop
+        </button>
         {isLoading && <span>Cargando pistas de audio...</span>}
       </div>
-      
+
       {/* Pistas de canción */}
       {song.audioFileData.songTracks.map((_track, index) => (
         <audio
           key={`song-${index}`}
-          src={trackUrls[index] || ''}
+          src={trackUrls[index] || ""}
           ref={(el) => {
             playerRefs.current[index] = el;
           }}
@@ -144,13 +154,30 @@ const AudioPlayer = ({ song, onTimeUpdate, onPlayingChange }: AudioPlayerProps) 
       {song.audioFileData.drumTracks.map((_track, index) => (
         <audio
           key={`drum-${index}`}
-          src={trackUrls[song.audioFileData.songTracks.length + index] || ''}
+          src={trackUrls[song.audioFileData.songTracks.length + index] || ""}
           ref={(el) => {
-            playerRefs.current[song.audioFileData.songTracks.length + index] = el;
+            playerRefs.current[song.audioFileData.songTracks.length + index] =
+              el;
           }}
           controls
         />
       ))}
+
+      {/* slider para el volumen */}
+
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        onChange={(e) => {
+          playerRefs.current.forEach((player) => {
+            if (player) {
+              player.volume = Number(e.target.value) / 100;
+            }
+          });
+        }}
+      />
     </div>
   );
 };
