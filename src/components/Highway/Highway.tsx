@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { EventData, SongData } from "../../types/songs";
-import styles from "./Highway.module.css";
 import classNames from "classnames";
+import { useEffect, useState } from "react";
+import { EventData, SongData } from "../../types/songs";
 import useStaticHandler from "../hooks/useStaticHandler";
+import styles from "./Highway.module.css";
 
 // Configuración principal
 const CONFIG = {
   HIGHWAY_HEIGHT: 900,
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
-  NOTES_BATCH_LENGTH: 6, // seconds,
   BATCH_LOAD_FREQUENCY: 3, // seconds
   ANIM_DURATION: 3, // seconds
 };
@@ -70,8 +69,8 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
 
       const notesBatch = song.events.filter(
         (note) =>
-          Number(note.time) >= currentTime - CONFIG.NOTES_BATCH_LENGTH / 2 &&
-          Number(note.time) <= currentTime + CONFIG.NOTES_BATCH_LENGTH / 2
+          Number(note.time) >= currentTime - CONFIG.ANIM_DURATION &&
+          Number(note.time) <= currentTime + CONFIG.ANIM_DURATION
       );
       const notesMap: Record<string, EventData[]> = {};
 
@@ -86,9 +85,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
           ...event,
           time: `${
             Number(event.time) -
-            currentTime +
-            CONFIG.NOTES_BATCH_LENGTH / 2 -
-            CONFIG.ANIM_DURATION
+            currentTime
           }`,
         });
       });
