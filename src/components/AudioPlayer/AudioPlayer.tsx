@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SongData } from "../../types/songs";
-import { loadAudioFile, releaseAudioUrl } from "../../helpers/audioLoader";
+import { loadAudioFile, releaseFileUrl } from "../../helpers/filesLoader";
 
 interface AudioPlayerProps {
   song: SongData;
@@ -46,7 +46,7 @@ const AudioPlayer = ({
 
     // Limpiar las URLs cuando el componente se desmonte
     return () => {
-      trackUrls.forEach((url) => releaseAudioUrl(url));
+      trackUrls.forEach((url) => releaseFileUrl(url));
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
