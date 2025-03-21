@@ -10,6 +10,7 @@ const CONFIG = {
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
   NOTES_BATCH_LENGTH: 6, // seconds,
   BATCH_LOAD_FREQUENCY: 3, // seconds
+  ANIM_DURATION: 3, // seconds
 };
 
 // Colores de los instrumentos
@@ -71,7 +72,12 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
       const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
       notesMap[instrument].push({
         ...event,
-        time: `${Number(event.time) - time + CONFIG.NOTES_BATCH_LENGTH / 2}`,
+        time: `${
+          Number(event.time) -
+          time +
+          CONFIG.NOTES_BATCH_LENGTH / 2 -
+          CONFIG.ANIM_DURATION
+        }`,
       });
     });
     console.log(notesMap);
@@ -95,6 +101,23 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
           style={{ bottom: `${CONFIG.DIVIDER_POSITION}%` }}
         ></div>
 
+        {/* Kick notes */}
+
+        <div className={styles.kickNotesContainer}>
+          {notes["BP_Kick_C"].map((note) => (
+            <div
+              key={note.time}
+              className={classNames(styles.note, styles.kick)}
+              style={{
+                backgroundColor: INSTRUMENT_COLORS["BP_Kick_C"],
+                animationDelay: `${note.time}s`,
+                animationPlayState: isPlaying ? "running" : "paused",
+                animationDuration: `${CONFIG.ANIM_DURATION}s`,
+              }}
+            ></div>
+          ))}
+        </div>
+
         {/* Notes (no kick) */}
 
         {ORDERED_INSTRUMENTS.map((instrument) => (
@@ -113,27 +136,12 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
                     ],
                   animationDelay: `${note.time}s`,
                   animationPlayState: isPlaying ? "running" : "paused",
+                  animationDuration: `${CONFIG.ANIM_DURATION}s`,
                 }}
               ></div>
             ))}
           </div>
         ))}
-
-        {/* Kick notes */}
-
-        <div className={styles.kickNotesContainer}>
-          {notes["BP_Kick_C"].map((note) => (
-            <div
-              key={note.time}
-              className={classNames(styles.note, styles.kick)}
-              style={{
-                backgroundColor: INSTRUMENT_COLORS["BP_Kick_C"],
-                animationDelay: `${note.time}s`,
-                animationPlayState: isPlaying ? "running" : "paused",
-              }}
-            ></div>
-          ))}
-        </div>
       </div>
     </div>
   );
