@@ -62,10 +62,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
 
-  /* efecto de profundidad */
-  margin-top: -4px;
-  width: 110%;
-  height: 110%;
   /* run animation only once */
   animation: depth 0s linear 1;
   animation-delay: inherit;
@@ -125,7 +121,7 @@
 @keyframes depth {
   0% {
     margin-top: -8px;
-    width: 105%;
+    width: 108%;
     height: 105%;
   }
   100% {
