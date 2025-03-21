@@ -8,7 +8,6 @@ import styles from "./Highway.module.css";
 const CONFIG = {
   HIGHWAY_HEIGHT: 900,
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
-  BATCH_LOAD_FREQUENCY: 3, // seconds
   ANIM_DURATION: 3, // seconds
 };
 
@@ -98,7 +97,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
     const interval = setInterval(() => {
       // load the notes 3 seconds before the current time and 3 seconds after
       getNotes();
-    }, CONFIG.BATCH_LOAD_FREQUENCY * 1000);
+    }, CONFIG.ANIM_DURATION / 2 * 1000);
 
     return () => clearInterval(interval);
   }, [song.events, getNotes, isPlaying]);
