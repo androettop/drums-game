@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const currentTimeRef = useRef<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
 
   const handleSelectSongs = async () => {
     setLoading(true);
@@ -35,7 +35,7 @@ function App() {
 
   // Manejador para actualizar el tiempo actual
   const handleTimeUpdate = (time: number) => {
-    currentTimeRef.current = time;
+    setCurrentTime(time);
   };
 
   // Manejador para actualizar el estado de reproducción
@@ -53,7 +53,7 @@ function App() {
 
       {song ? (
         <>
-          <Highway song={song} isPlaying={isPlaying} />
+          <Highway song={song} time={currentTime} isPlaying={isPlaying} />
           <AudioPlayer 
             song={song} 
             onTimeUpdate={handleTimeUpdate} 

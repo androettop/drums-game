@@ -23,7 +23,7 @@ export type EventData = {
     name: string,
     vel: number,
     loc: number,
-    time: number
+    time: string,
 }
 
 export type BPMEventData = {

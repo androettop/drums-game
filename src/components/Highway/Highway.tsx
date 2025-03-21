@@ -1,14 +1,15 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EventData, SongData } from "../../types/songs";
 import styles from "./Highway.module.css";
 import classNames from "classnames";
+import useStaticHandler from "../hooks/useStaticHandler";
 
 // Configuración principal
 const CONFIG = {
   HIGHWAY_HEIGHT: 900,
-  DIVIDER_POSITION: 100,
-  NOTES_SPEED: 2, // seconds to reach divider
-  NOTES_DELAY: 30 / 1000, // 30ms in seconds
+  DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
+  NOTES_BATCH_LENGTH: 6, // seconds,
+  BATCH_LOAD_FREQUENCY: 3, // seconds
 };
 
 // Colores de los instrumentos
@@ -40,32 +41,58 @@ const ORDERED_INSTRUMENTS = [
 interface HighwayProps {
   song: SongData;
   isPlaying: boolean;
+  time: number;
 }
 
-const Highway = ({ song, isPlaying }: HighwayProps) => {
-  const notes = useMemo(() => {
-    // instrument, event
+const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
+  const [notes, setNotes] = useState<Record<string, EventData[]>>(() => {
+    const initialNotes: Record<string, EventData[]> = {};
+    ORDERED_INSTRUMENTS.forEach((instrument) => {
+      initialNotes[instrument] = [];
+    });
+    initialNotes["BP_Kick_C"] = [];
+    return initialNotes;
+  });
+
+  const getNotes = useStaticHandler(() => {
+    const notesBatch = song.events.filter(
+      (note) =>
+        Number(note.time) >= time - CONFIG.NOTES_BATCH_LENGTH / 2 &&
+        Number(note.time) <= time + CONFIG.NOTES_BATCH_LENGTH / 2
+    );
     const notesMap: Record<string, EventData[]> = {};
 
     ORDERED_INSTRUMENTS.forEach((instrument) => {
       notesMap[instrument] = [];
     });
-    notesMap["BP_Kick_C"] = [];   
+    notesMap["BP_Kick_C"] = [];
 
-    song.events.forEach((event) => {
+    notesBatch.forEach((event) => {
       const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
-      notesMap[instrument].push(event);
+      notesMap[instrument].push({
+        ...event,
+        time: `${Number(event.time) - time + CONFIG.NOTES_BATCH_LENGTH / 2}`,
+      });
     });
+    console.log(notesMap);
+    setNotes(notesMap);
+  });
 
-    return notesMap;
-  }, [song.events]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // load the notes 3 seconds before the current time and 3 seconds after
+      getNotes();
+    }, CONFIG.BATCH_LOAD_FREQUENCY * 1000);
+
+    return () => clearInterval(interval);
+  }, [song.events, getNotes]);
 
   return (
     <div>
       <div className={styles.highway} style={{ height: CONFIG.HIGHWAY_HEIGHT }}>
         <div
           className={styles.divider}
-          style={{ bottom: CONFIG.DIVIDER_POSITION }}
+          style={{ bottom: `${CONFIG.DIVIDER_POSITION}%` }}
         ></div>
 
         {/* Notes (no kick) */}
@@ -84,6 +111,8 @@ const Highway = ({ song, isPlaying }: HighwayProps) => {
                     INSTRUMENT_COLORS[
                       instrument as keyof typeof INSTRUMENT_COLORS
                     ],
+                  animationDelay: `${note.time}s`,
+                  animationPlayState: isPlaying ? "running" : "paused",
                 }}
               ></div>
             ))}
@@ -99,6 +128,8 @@ const Highway = ({ song, isPlaying }: HighwayProps) => {
               className={classNames(styles.note, styles.kick)}
               style={{
                 backgroundColor: INSTRUMENT_COLORS["BP_Kick_C"],
+                animationDelay: `${note.time}s`,
+                animationPlayState: isPlaying ? "running" : "paused",
               }}
             ></div>
           ))}
