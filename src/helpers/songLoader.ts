@@ -16,8 +16,8 @@ export const selectSongsFolder = async (): Promise<FileSystemDirectoryHandle | n
 /**
  * Encuentra todos los archivos JSON en una carpeta y sus subcarpetas
  */
-export const findJsonFiles = async (directoryHandle: FileSystemDirectoryHandle): Promise<Map<string, FileSystemFileHandle>> => {
-  const jsonFiles = new Map<string, FileSystemFileHandle>();
+export const findJsonFiles = async (directoryHandle: FileSystemDirectoryHandle): Promise<Map<string, { file: FileSystemFileHandle, parentDir: FileSystemDirectoryHandle, path: string }>> => {
+  const jsonFiles = new Map<string, { file: FileSystemFileHandle, parentDir: FileSystemDirectoryHandle, path: string }>();
   
   // Función recursiva para explorar carpetas
   async function exploreDirectory(handle: FileSystemDirectoryHandle, path: string) {
@@ -27,7 +27,11 @@ export const findJsonFiles = async (directoryHandle: FileSystemDirectoryHandle):
       if (entry.kind === 'directory') {
         await exploreDirectory(entry, newPath);
       } else if (entry.kind === 'file' && name.endsWith('.rlrr')) {
-        jsonFiles.set(newPath, entry);
+        jsonFiles.set(newPath, { 
+          file: entry, 
+          parentDir: handle,
+          path: newPath
+        });
       }
     }
   }
@@ -77,7 +81,8 @@ export const loadFirstSong = async (): Promise<SongData | null> => {
   }
   
   // Tomar el primer archivo JSON encontrado
-  const firstJsonFile = [...jsonFiles.values()][0];
+  const firstJsonFileEntry = [...jsonFiles.values()][0];
+  const { file: firstJsonFile, parentDir, path } = firstJsonFileEntry;
   
   try {
     // Leer y parsear el archivo
@@ -85,7 +90,15 @@ export const loadFirstSong = async (): Promise<SongData | null> => {
     
     // Validar que coincida con el tipo SongData
     if (validateSongData(songData)) {
-      return songData;
+      // Añadir información sobre la carpeta de la canción
+      const pathParts = path.split('/');
+      const folderName = pathParts.length > 1 ? pathParts[pathParts.length - 2] : '';
+      
+      return {
+        ...songData,
+        folderName,
+        folderHandle: parentDir
+      };
     } else {
       console.error("El archivo no contiene datos de canción válidos");
       return null;

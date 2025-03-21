@@ -1,4 +1,3 @@
-
 export type RecordingMetadata = {
     title: string,
     description: string,
@@ -39,4 +38,7 @@ export type SongData = {
     instruments: InstrumentData[],
     events: EventData[],
     bpmEvents: BPMEventData[],
+    // Campos adicionales para manejar los archivos (no existen en el JSON original)
+    folderName?: string,
+    folderHandle?: FileSystemDirectoryHandle
 }
