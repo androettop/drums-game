@@ -22,7 +22,7 @@ const INSTRUMENT_COLORS = {
   BP_FloorTom_C: "#552288", // violeta
   BP_Crash17_C: "#FF5733", // naranja
   BP_Ride17_C: "#F5FF33", // amarillo
-  BP_Kick_C: "#4054b6", // azul
+  BP_Kick_C: "rgba(64, 84, 182, 0.6)", // azul
   BP_Crash15_C: "#FF33F5", // rosa
   BP_Ride20_C: "#FFAA33", // naranja claro
 };

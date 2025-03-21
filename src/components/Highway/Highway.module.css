@@ -82,6 +82,11 @@
   z-index: 15;
 }
 
+/* no 3d effect for the kick note */
+.note.kick::after {
+  display: none;
+}
+
 .note.circle {
   width: 45px;
   height: 45px;
