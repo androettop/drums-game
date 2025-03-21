@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Highway from "./components/Highway/Highway";
+import { loadFirstSong } from "./helpers/songLoader";
+import { SongData } from "./types/songs";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [song, setSong] = useState<SongData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSelectSongs = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const songData = await loadFirstSong();
+      if (songData) {
+        setSong(songData);
+      } else {
+        setError("No se pudo cargar ninguna canción");
+      }
+    } catch (err) {
+      setError(`Error al cargar las canciones: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <button onClick={handleSelectSongs} disabled={loading}>
+        {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
+      </button>
+      
+      {error && <div style={{ color: "red" }}>{error}</div>}
+      
+      {song ? (
+        <Highway song={song} />
+      ) : (
+        <div>No hay canción seleccionada. Por favor, elija una carpeta de canciones.</div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
