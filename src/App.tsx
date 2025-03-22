@@ -46,7 +46,7 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <button onClick={handleSelectSongs} disabled={loading}>
         {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
       </button>
@@ -69,7 +69,7 @@ function App() {
           canciones.
         </div>
       )}
-    </div>
+    </>
   );
 }
 

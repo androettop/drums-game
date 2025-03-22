@@ -6,7 +6,6 @@ import styles from "./Highway.module.css";
 
 // Configuración principal
 const CONFIG = {
-  HIGHWAY_HEIGHT: 900,
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
   ANIM_DURATION: 3, // seconds
 };
@@ -82,10 +81,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
         const instrument = event.name.substring(0, event.name.lastIndexOf("_"));
         notesMap[instrument].push({
           ...event,
-          time: `${
-            Number(event.time) -
-            currentTime
-          }`,
+          time: `${Number(event.time) - currentTime}`,
         });
       });
       setNotes(notesMap);
@@ -97,28 +93,50 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
     const interval = setInterval(() => {
       // load the notes 3 seconds before the current time and 3 seconds after
       getNotes();
-    }, CONFIG.ANIM_DURATION / 2 * 1000);
+    }, (CONFIG.ANIM_DURATION / 2) * 1000);
 
     return () => clearInterval(interval);
   }, [song.events, getNotes, isPlaying]);
 
   return (
-    <div>
-      <div className={styles.highway} style={{ height: CONFIG.HIGHWAY_HEIGHT }}>
-        <div
-          className={styles.divider}
-          style={{ bottom: `${CONFIG.DIVIDER_POSITION}%` }}
-        ></div>
+    <div className={styles.highway}>
+      <div
+        className={styles.divider}
+        style={{ bottom: `${CONFIG.DIVIDER_POSITION}%` }}
+      ></div>
 
-        {/* Kick notes */}
+      {/* Kick notes */}
 
-        <div className={styles.kickNotesContainer}>
-          {notes["BP_Kick_C"].map((note) => (
+      <div className={styles.kickNotesContainer}>
+        {notes["BP_Kick_C"].map((note) => (
+          <div
+            key={note.time}
+            className={classNames(styles.note, styles.kick)}
+            style={{
+              backgroundColor: INSTRUMENT_COLORS["BP_Kick_C"],
+              animationDelay: `${note.time}s`,
+              animationPlayState: isPlaying ? "running" : "paused",
+              animationDuration: `${CONFIG.ANIM_DURATION}s`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* Notes (no kick) */}
+
+      {ORDERED_INSTRUMENTS.map((instrument) => (
+        <div className={styles.instNotesContainer} key={instrument}>
+          {notes[instrument].map((note) => (
             <div
               key={note.time}
-              className={classNames(styles.note, styles.kick)}
+              className={classNames(styles.note, {
+                [styles.circle]: CIRCLE_INSTRUMENTS.includes(instrument),
+              })}
               style={{
-                backgroundColor: INSTRUMENT_COLORS["BP_Kick_C"],
+                backgroundColor:
+                  INSTRUMENT_COLORS[
+                    instrument as keyof typeof INSTRUMENT_COLORS
+                  ],
                 animationDelay: `${note.time}s`,
                 animationPlayState: isPlaying ? "running" : "paused",
                 animationDuration: `${CONFIG.ANIM_DURATION}s`,
@@ -126,31 +144,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
             ></div>
           ))}
         </div>
-
-        {/* Notes (no kick) */}
-
-        {ORDERED_INSTRUMENTS.map((instrument) => (
-          <div className={styles.instNotesContainer} key={instrument}>
-            {notes[instrument].map((note) => (
-              <div
-                key={note.time}
-                className={classNames(styles.note, {
-                  [styles.circle]: CIRCLE_INSTRUMENTS.includes(instrument),
-                })}
-                style={{
-                  backgroundColor:
-                    INSTRUMENT_COLORS[
-                      instrument as keyof typeof INSTRUMENT_COLORS
-                    ],
-                  animationDelay: `${note.time}s`,
-                  animationPlayState: isPlaying ? "running" : "paused",
-                  animationDuration: `${CONFIG.ANIM_DURATION}s`,
-                }}
-              ></div>
-            ))}
-          </div>
-        ))}
-      </div>
+      ))}
     </div>
   );
 };
