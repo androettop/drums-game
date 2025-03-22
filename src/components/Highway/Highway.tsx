@@ -4,24 +4,24 @@ import { EventData, SongData } from "../../types/songs";
 import useStaticHandler from "../hooks/useStaticHandler";
 import styles from "./Highway.module.css";
 
-// Configuración principal
+// Main configuration
 const CONFIG = {
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
   ANIM_DURATION: 2, // seconds
 };
 
-// Colores de los instrumentos
+// Instrument colors
 const INSTRUMENT_COLORS = {
   BP_HiHat_C: "#33FFF5", // cyan
-  BP_Crash15_C: "#FF33F5", // rosa
-  BP_Snare_C: "#FF3333", // rojo
-  BP_Tom1_C: "#33FFAA", // turquesa
-  BP_Tom2_C: "#118811", // verde oscuro
-  BP_FloorTom_C: "#552288", // violeta
-  BP_Crash17_C: "#FF5733", // naranja
-  BP_Ride17_C: "#F5FF33", // amarillo
-  BP_Kick_C: "rgba(64, 84, 182, 0.6)", // azul
-  BP_Ride20_C: "#FFAA33", // naranja claro
+  BP_Crash15_C: "#FF33F5", // pink
+  BP_Snare_C: "#FF3333", // red
+  BP_Tom1_C: "#33FFAA", // turquoise
+  BP_Tom2_C: "#118811", // dark green
+  BP_FloorTom_C: "#552288", // violet
+  BP_Crash17_C: "#FF5733", // orange
+  BP_Ride17_C: "#F5FF33", // yellow
+  BP_Kick_C: "rgba(64, 84, 182, 0.6)", // blue
+  BP_Ride20_C: "#FFAA33", // light orange
 };
 
 const CIRCLE_INSTRUMENTS = [
@@ -32,7 +32,7 @@ const CIRCLE_INSTRUMENTS = [
   "BP_Ride20_C",
 ];
 
-// Crear un array de las clases de instrumento en el orden que aparecen en INSTRUMENT_COLORS
+// Create an array of instrument classes in the order they appear in INSTRUMENT_COLORS
 const ORDERED_INSTRUMENTS = [
   "BP_HiHat_C",
   "BP_Crash15_C",
