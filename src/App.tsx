@@ -10,6 +10,7 @@ function App() {
   const [songList, setSongList] = useState<SongData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   const handleSelectSongs = async () => {
     setLoading(true);
@@ -35,44 +36,61 @@ function App() {
     setSelectedSong(null);
   };
 
-  if (selectedSong) {
-    return <GamePlayer song={selectedSong} onExit={handleExit} />;
-  } else {
-    return (
-      <div className={styles.container}>
-        <button
-          onClick={handleSelectSongs}
-          disabled={loading}
-          className={styles.selectButton}
-        >
-          {loading ? "Loading..." : "Select songs folder"}
-        </button>
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
 
-        {songList ? (
-          <div className={styles.songGrid}>
-            {songList.map((song) => (
-              <SmallCover
-                key={song.id}
-                song={song}
-                onClick={() => {
-                  setSelectedSong(song);
-                }}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className={styles.noSongsMessage}>
-            There are no songs loaded. Click the button to select a folder.{" "}
-            <br />
-            You can use the same songs as in the{" "}
-            <a href="https://paradiddleapp.com/">Paradiddle VR game </a>
-          </p>
-        )}
+  return (
+    <>
+      {selectedSong ? (
+        <GamePlayer song={selectedSong} onExit={handleExit} />
+      ) : (
+        <div className={styles.container}>
+          <button
+            onClick={handleSelectSongs}
+            disabled={loading}
+            className={styles.selectButton}
+          >
+            {loading ? "Loading..." : "Select songs folder"}
+          </button>
 
-        {error && <div className={styles.errorMessage}>{error}</div>}
-      </div>
-    );
-  }
+          {songList ? (
+            <div className={styles.songGrid}>
+              {songList.map((song) => (
+                <SmallCover
+                  key={song.id}
+                  song={song}
+                  onClick={() => {
+                    setSelectedSong(song);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className={styles.noSongsMessage}>
+              There are no songs loaded. Click the button to select a folder.{" "}
+              <br />
+              You can use the same songs as in the{" "}
+              <a href="https://paradiddleapp.com/">Paradiddle VR game </a>
+            </p>
+          )}
+
+          {error && <div className={styles.errorMessage}>{error}</div>}
+        </div>
+      )}
+
+      <button onClick={toggleFullscreen} className={styles.fullscreenButton}>
+        {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+      </button>
+    </>
+  );
+  
 }
 
 export default App;
