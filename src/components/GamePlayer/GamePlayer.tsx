@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { SongData } from "../../types/songs";
-import Highway from "../Highway/Highway";
 import AudioPlayer from "../AudioPlayer/AudioPlayer";
 import CoverBg from "../CoverBg/CoverBg";
+import Highway from "../Highway/Highway";
 
 interface GamePlayerProps {
   song: SongData;
@@ -10,28 +9,10 @@ interface GamePlayerProps {
 }
 
 const GamePlayer = ({ song, onExit }: GamePlayerProps) => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-
-  // Handler to update the current time
-  const handleTimeUpdate = (time: number) => {
-    setCurrentTime(time);
-  };
-
-  // Handler to update the playing state
-  const handlePlayingChange = (playing: boolean) => {
-    setIsPlaying(playing);
-  };
-
   return (
     <>
-      <Highway song={song} time={currentTime} isPlaying={isPlaying} />
-      <AudioPlayer
-        song={song}
-        onTimeUpdate={handleTimeUpdate}
-        onPlayingChange={handlePlayingChange}
-        onExit={onExit}
-      />
+      <Highway song={song} />
+      <AudioPlayer song={song} onExit={onExit} />
       <CoverBg song={song} />
     </>
   );

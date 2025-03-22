@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
+    "excalibur": "^0.30.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "uuid": "^11.1.0"

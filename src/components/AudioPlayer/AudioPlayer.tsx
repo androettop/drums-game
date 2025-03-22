@@ -6,14 +6,12 @@ import styles from "./AudioPlayer.module.css";
 
 interface AudioPlayerProps {
   song: SongData;
-  onTimeUpdate?: (time: number) => void; // Callback to update the time
   onPlayingChange?: (isPlaying: boolean) => void; // Callback to update the playing state
   onExit: () => void; // Callback to exit the game
 }
 
 const AudioPlayer = ({
   song,
-  onTimeUpdate,
   onPlayingChange,
   onExit,
 }: AudioPlayerProps) => {
@@ -61,21 +59,6 @@ const AudioPlayer = ({
     };
   }, [song]);
 
-  // Function to update the time using requestAnimationFrame
-  const updateTime = () => {
-    console.log("updateTime");
-    if (masterPlayerRef.current && onTimeUpdate) {
-      const time = masterPlayerRef.current.currentTime;
-      onTimeUpdate(time);
-      setCurrentTime(time);
-    }
-
-    if (isPlaying.current) {
-      setTimeout(() => {
-        animationFrameRef.current = requestAnimationFrame(updateTime);
-      }, 1000);
-    }
-  };
 
   const handlePlay = () => {
     playerRefs.current.forEach((player, index) => {
@@ -92,8 +75,6 @@ const AudioPlayer = ({
       }
     });
     isPlaying.current = true;
-    // Start time update
-    animationFrameRef.current = requestAnimationFrame(updateTime);
     // Notify state change
     if (onPlayingChange) {
       onPlayingChange(true);
@@ -131,9 +112,7 @@ const AudioPlayer = ({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
-    if (onTimeUpdate) {
-      onTimeUpdate(0);
-    }
+
     // Notify state change
     if (onPlayingChange) {
       onPlayingChange(false);
@@ -156,9 +135,6 @@ const AudioPlayer = ({
       }
     });
 
-    if (onTimeUpdate) {
-      onTimeUpdate(newTime);
-    }
   };
 
   // Function to change the volume
@@ -237,7 +213,7 @@ const AudioPlayer = ({
           disabled={isLoading}
           className={isDrumsMuted ? styles.activeToggle : ""}
         >
-          {isDrumsMuted ? "Unmute" : "Mute"} Drums
+          Drums
         </button>
         <button onClick={handleExit} disabled={isLoading}>
           Exit
