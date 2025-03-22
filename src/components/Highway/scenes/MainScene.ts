@@ -1,8 +1,16 @@
-import { Engine, ImageSource, Scene, vec } from "excalibur";
-import { EventData } from "../../../types/songs";
+import { ImageSource, Scene, vec } from "excalibur";
 import BaseNote from "../actors/BaseNote";
+import HiHatNote from "../actors/HiHatNote";
+import SnareNote from "../actors/SnareNote";
+import { GAME_CONFIG } from "../config";
 import HighwayEngine from "../engine";
 import { MusicFile } from "../helpers/loaders";
+
+type ProcessedNote = {
+  time: number;
+  class: string;
+  posX: number;
+};
 
 class MainScene extends Scene {
   static BATCH_SIZE_SECONDS = 4;
@@ -14,11 +22,12 @@ class MainScene extends Scene {
 
   counter: number = 0;
   sprites: Record<string, ImageSource> = {};
-  notes: Record<number, EventData[]> = {};
+  notes: Record<number, ProcessedNote[]> = {};
+  instruments: string[] = [];
   mainTrack: MusicFile | null = null;
   lastBatchNumber: number = -1;
 
-  public onPostUpdate(engine: Engine, elapsed: number): void {
+  public onPostUpdate(engine: HighwayEngine, elapsed: number): void {
     super.onPostUpdate(engine, elapsed);
 
     const currentTime =
@@ -34,7 +43,6 @@ class MainScene extends Scene {
       if (notes) {
         notes.forEach((note) => {
           // TODO: select based on the instrument. for now random between 100 and 300
-          const posX = Math.floor(Math.random() * 200) + 100;
 
           // Should be 0 but fixed based on the remaining time of the note to be played. using the BaseNote.NOTE_SPEED, the time property of the note and the current time of the track.
           console.log("Current time: ", currentTime);
@@ -44,8 +52,22 @@ class MainScene extends Scene {
             0 + (currentTime - Number(note.time)) * BaseNote.NOTE_SPEED * 1000;
           console.log("Note posY: ", posY);
 
-          const baseNote = new BaseNote(vec(posX, posY), "Circle", "Yellow");
-          this.add(baseNote);
+          let baseNote: BaseNote | null = null;
+          switch (note.class) {
+            case "BP_HiHat_C":
+              baseNote = new HiHatNote(vec(note.posX, posY));
+              break;
+            case "BP_Snare_C":
+              baseNote = new SnareNote(vec(note.posX, posY));
+              break;
+            default:
+              baseNote = new BaseNote(vec(note.posX, posY));
+              break;
+          }
+
+          if (baseNote) {
+            this.add(baseNote);
+          }
         });
       }
       console.groupEnd();
@@ -58,14 +80,30 @@ class MainScene extends Scene {
   public onActivate() {
     const engine = this.engine as HighwayEngine;
 
-    // preprocess the song events to add it in this.notes with the key as the batch number.
+    // load instruments used in the song
+    this.instruments = GAME_CONFIG.instrumentsOrder.filter((instrument) =>
+      engine.song.events.some((event) => event.name.startsWith(instrument))
+    );
 
+    // preprocess the song events to add it in this.notes with the key as the batch number.
     engine.song.events.forEach((event) => {
       const batchNumber = MainScene.getBatchNumber(event.time);
       if (!this.notes[batchNumber]) {
         this.notes[batchNumber] = [];
       }
-      this.notes[batchNumber].push(event);
+
+      const instrumentClass = event.name.substring(0, event.name.lastIndexOf("_")),
+
+      instrumentIndex = this.instruments.indexOf(instrumentClass);
+
+
+      const newNote: ProcessedNote = {
+        time: Number(event.time),
+        class: instrumentClass,
+        posX: GAME_CONFIG.width / (this.instruments.length) * (instrumentIndex) + GAME_CONFIG.width / (this.instruments.length * 2),
+      };
+
+      this.notes[batchNumber].push(newNote);
     });
 
     // start all tracks
