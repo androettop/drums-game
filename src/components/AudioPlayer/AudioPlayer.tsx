@@ -177,7 +177,7 @@ const AudioPlayer = ({
   const toggleDrumsMute = () => {
     const newMuteState = !isDrumsMuted;
     setIsDrumsMuted(newMuteState);
-    
+
     // Update the volume of drum tracks
     const songTracksCount = song.audioFileData.songTracks.length;
     playerRefs.current.forEach((player, index) => {
@@ -219,8 +219,12 @@ const AudioPlayer = ({
         <button onClick={handleStop} disabled={isLoading}>
           Stop
         </button>
-        <button onClick={toggleDrumsMute} disabled={isLoading} className={isDrumsMuted ? styles.activeToggle : ''}>
-          {isDrumsMuted ? 'Unmute' : 'Mute'} Drums
+        <button
+          onClick={toggleDrumsMute}
+          disabled={isLoading}
+          className={isDrumsMuted ? styles.activeToggle : ""}
+        >
+          {isDrumsMuted ? "Unmute" : "Mute"} Drums
         </button>
         <button onClick={handleExit} disabled={isLoading}>
           Exit
@@ -270,27 +274,39 @@ const AudioPlayer = ({
       </div>
 
       {/* Song Tracks */}
-      {song.audioFileData.songTracks.map((_track, index) => (
-        <audio
-          key={`song-${index}`}
-          src={trackUrls[index] || ""}
-          ref={(el) => {
-            playerRefs.current[index] = el;
-          }}
-        />
-      ))}
+      {song.audioFileData.songTracks.map((_track, index) => {
+        const src = trackUrls[index];
+        if (!src) {
+          return null;
+        }
+        return (
+          <audio
+            key={`song-${index}`}
+            src={src}
+            ref={(el) => {
+              playerRefs.current[index] = el;
+            }}
+          />
+        );
+      })}
 
       {/* Drum Tracks */}
-      {song.audioFileData.drumTracks.map((_track, index) => (
-        <audio
-          key={`drum-${index}`}
-          src={trackUrls[song.audioFileData.songTracks.length + index] || ""}
-          ref={(el) => {
-            playerRefs.current[song.audioFileData.songTracks.length + index] =
-              el;
-          }}
-        />
-      ))}
+      {song.audioFileData.drumTracks.map((_track, index) => {
+        const src = trackUrls[song.audioFileData.songTracks.length + index];
+        if (!src) {
+          return null;
+        }
+        return (
+          <audio
+            key={`drum-${index}`}
+            src={src}
+            ref={(el) => {
+              playerRefs.current[song.audioFileData.songTracks.length + index] =
+                el;
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
