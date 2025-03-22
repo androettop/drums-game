@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SongData } from "../../types/songs";
-import { loadAudioFile, releaseFileUrl } from "../../helpers/filesLoader";
+import { loadFile, releaseFileUrl } from "../../helpers/filesLoader";
 import classNames from "classnames";
 import styles from "./AudioPlayer.module.css";
 
@@ -32,12 +32,12 @@ const AudioPlayer = ({
 
       // Load song tracks
       const songTrackPromises = song.audioFileData.songTracks.map((track) =>
-        loadAudioFile(song, track)
+        loadFile(song, track)
       );
 
       // Load drum tracks
       const drumTrackPromises = song.audioFileData.drumTracks.map((track) =>
-        loadAudioFile(song, track)
+        loadFile(song, track)
       );
 
       // Wait for all tracks to load

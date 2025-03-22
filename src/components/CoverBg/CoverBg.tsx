@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { loadImageFile, releaseFileUrl } from "../../helpers/filesLoader";
+import { loadFile, releaseFileUrl } from "../../helpers/filesLoader";
 import { SongData } from "../../types/songs";
 import useStaticHandler from "../hooks/useStaticHandler";
 import styles from "./CoverBg.module.css";
@@ -13,7 +13,7 @@ const CoverBg = ({ song }: CoverBgProps) => {
 
   const loadCover = useStaticHandler(async () => {
     const filename = song.recordingMetadata.coverImagePath;
-    const url = await loadImageFile(song, filename);
+    const url = await loadFile(song, filename);
     if (url) {
       setCoverUrl(url);
     }

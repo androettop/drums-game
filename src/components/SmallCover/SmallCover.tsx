@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { loadImageFile, releaseFileUrl } from "../../helpers/filesLoader";
+import { loadFile, releaseFileUrl } from "../../helpers/filesLoader";
 import { SongData } from "../../types/songs";
 import useStaticHandler from "../hooks/useStaticHandler";
 import styles from "./SmallCover.module.css";
@@ -15,7 +15,7 @@ const SmallCover = ({ song, onClick }: SmallCoverProps) => {
 
   const loadCover = useStaticHandler(async () => {
     const filename = song.recordingMetadata.coverImagePath;
-    const url = await loadImageFile(song, filename);
+    const url = await loadFile(song, filename);
     if (url) {
       setCoverUrl(url);
     }

@@ -1,12 +1,14 @@
 import { Color, Engine } from "excalibur";
 import { SongData } from "../../types/songs";
-import MainScene from "./scenes/MainScene";
-import { createLoader } from "./resources";
 import { Resources as NotesResources } from "./actors/resources";
 import { GAME_CONFIG } from "./config";
+import { MusicFile } from "./helpers/loaders";
+import { createLoader } from "./resources";
+import MainScene from "./scenes/MainScene";
 
 class HighwayEngine extends Engine {
   song: SongData;
+  audioTracks: MusicFile[] = [];
 
   constructor(canvas: HTMLCanvasElement, song: SongData) {
     super({
@@ -19,8 +21,11 @@ class HighwayEngine extends Engine {
     this.song = song;
   }
   initialize() {
+    this.audioTracks = this.song.audioFileData.songTracks.map((trackName) => new MusicFile(this.song, trackName));
     this.add("main", new MainScene());
-    this.start(createLoader(NotesResources));
+    const loader = createLoader(NotesResources);
+    loader.addResources(this.audioTracks);
+    this.start(loader);
   }
 
   onInitialize(engine: Engine): void {
