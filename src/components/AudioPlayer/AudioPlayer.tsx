@@ -63,6 +63,7 @@ const AudioPlayer = ({
 
   // Function to update the time using requestAnimationFrame
   const updateTime = () => {
+    console.log("updateTime");
     if (masterPlayerRef.current && onTimeUpdate) {
       const time = masterPlayerRef.current.currentTime;
       onTimeUpdate(time);
@@ -70,7 +71,9 @@ const AudioPlayer = ({
     }
 
     if (isPlaying.current) {
-      animationFrameRef.current = requestAnimationFrame(updateTime);
+      setTimeout(() => {
+        animationFrameRef.current = requestAnimationFrame(updateTime);
+      }, 1000);
     }
   };
 
@@ -81,7 +84,9 @@ const AudioPlayer = ({
         // Set the first player as the master for time
         if (index === 0) {
           masterPlayerRef.current = player;
-        } else if (masterPlayerRef.current) {
+        }
+
+        if (masterPlayerRef.current) {
           player.currentTime = masterPlayerRef.current.currentTime;
         }
       }
@@ -137,6 +142,11 @@ const AudioPlayer = ({
 
   // Function to change the song position
   const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // If the player is playing, pause it and resume after setting the time
+    if (isPlaying.current) {
+      handlePause();
+    }
+
     const newTime = parseFloat(e.target.value);
     setCurrentTime(newTime);
 
@@ -148,19 +158,6 @@ const AudioPlayer = ({
 
     if (onTimeUpdate) {
       onTimeUpdate(newTime);
-    }
-
-    // If the player is playing, pause it and resume after setting the time
-    if (isPlaying.current) {
-      handlePause();
-      setTimeout(() => {
-        handlePlay();
-      }, 100);
-    } else {
-      handlePlay();
-      setTimeout(() => {
-        handlePause();
-      }, 100);
     }
   };
 
@@ -223,10 +220,13 @@ const AudioPlayer = ({
   return (
     <div className={styles.audioPlayer}>
       <div className={styles.controls}>
-        <button onClick={handlePlay} disabled={isLoading}>
+        <button onClick={handlePlay} disabled={isLoading || isPlaying.current}>
           Play
         </button>
-        <button onClick={handlePause} disabled={isLoading}>
+        <button
+          onClick={handlePause}
+          disabled={isLoading || !isPlaying.current}
+        >
           Pause
         </button>
         <button onClick={handleStop} disabled={isLoading}>
