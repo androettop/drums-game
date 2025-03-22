@@ -1,6 +1,5 @@
 .highway {
-  --highway-height: calc(100vh - 300px);
-  height: var(--highway-height);
+  height: 900px;
   aspect-ratio: 3/4;
   background: linear-gradient(180deg, #333, #222);
   display: flex;
@@ -107,19 +106,19 @@
 @keyframes move {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) translateY(calc(var(--highway-height) * 0));
+    transform: translate(-50%, -50%) translateY(0);
     padding: 2px;
   }
   10% {
     opacity: 1;
-    transform: translate(-50%, -50%) translateY(calc(var(--highway-height) * 0.1));
+    transform: translate(-50%, -50%) translateY(90px);
   }
   90% {
-    transform: translate(-50%, -50%) translateY(calc(var(--highway-height) * 0.9));
+    transform: translate(-50%, -50%) translateY(810px);
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) translateY( calc(var(--highway-height)));
+    transform: translate(-50%, -50%) translateY( 900px);
     opacity: 0;
   }
 }
