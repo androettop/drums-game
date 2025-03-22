@@ -149,6 +149,19 @@ const AudioPlayer = ({
     if (onTimeUpdate) {
       onTimeUpdate(newTime);
     }
+
+    // If the player is playing, pause it and resume after setting the time
+    if (isPlaying.current) {
+      handlePause();
+      setTimeout(() => {
+        handlePlay();
+      }, 100);
+    } else {
+      handlePlay();
+      setTimeout(() => {
+        handlePause();
+      }, 100);
+    }
   };
 
   // Function to change the volume

@@ -8,6 +8,7 @@ import styles from "./Highway.module.css";
 const CONFIG = {
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
   ANIM_DURATION: 2, // seconds
+  LOAD_BATCH_DURATION: 30, // seconds
 };
 
 // Instrument colors
@@ -73,8 +74,8 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
 
       const notesBatch = song.events.filter(
         (note) =>
-          Number(note.time) >= currentTime - CONFIG.ANIM_DURATION &&
-          Number(note.time) <= currentTime + CONFIG.ANIM_DURATION
+          Number(note.time) >= currentTime - CONFIG.LOAD_BATCH_DURATION &&
+          Number(note.time) <= currentTime + CONFIG.LOAD_BATCH_DURATION
       );
       const notesMap: Record<string, EventData[]> = {};
 
@@ -99,7 +100,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
     const interval = setInterval(() => {
       // load the notes 3 seconds before the current time and 3 seconds after
       getNotes();
-    }, (CONFIG.ANIM_DURATION / 2) * 1000);
+    }, (CONFIG.LOAD_BATCH_DURATION / 2) * 1000);
 
     return () => clearInterval(interval);
   }, [song.events, getNotes, isPlaying]);
