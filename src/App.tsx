@@ -45,7 +45,7 @@ function App() {
           disabled={loading}
           className={styles.selectButton}
         >
-          {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
+          {loading ? "Loading..." : "Select songs folder"}
         </button>
 
         {songList ? (
@@ -63,8 +63,8 @@ function App() {
           </div>
         ) : (
           <p className={styles.noSongsMessage}>
-            No hay canción seleccionada. Por favor, elija una carpeta de
-            canciones.
+            There are no songs loaded. Click the button to select a folder. <br />
+            You can use the same songs as in the <a href="https://paradiddleapp.com/">Paradiddle VR game </a>
           </p>
         )}
 
