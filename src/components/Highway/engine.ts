@@ -8,7 +8,8 @@ import MainScene from "./scenes/MainScene";
 
 class HighwayEngine extends Engine {
   song: SongData;
-  audioTracks: MusicFile[] = [];
+  songTracks: MusicFile[] = [];
+  drumTracks: MusicFile[] = [];
   cover: ImageFile | null = null;
 
   constructor(canvas: HTMLCanvasElement, song: SongData) {
@@ -22,11 +23,21 @@ class HighwayEngine extends Engine {
     this.song = song;
   }
   initialize() {
-    this.audioTracks = this.song.audioFileData.songTracks.map((trackName) => new MusicFile(this.song, trackName));
-    this.cover = new ImageFile(this.song, this.song.recordingMetadata.coverImagePath);
+    this.songTracks = this.song.audioFileData.songTracks.map(
+      (trackName) => new MusicFile(this.song, trackName)
+    );
+    this.drumTracks = this.song.audioFileData.drumTracks.map(
+      (trackName) => new MusicFile(this.song, trackName)
+    );
+
+    this.cover = new ImageFile(
+      this.song,
+      this.song.recordingMetadata.coverImagePath
+    );
     this.add("main", new MainScene());
     const loader = createLoader(NotesResources);
-    loader.addResources(this.audioTracks);
+    loader.addResources(this.songTracks);
+    loader.addResources(this.drumTracks);
     loader.addResource(this.cover);
     this.start(loader);
   }
