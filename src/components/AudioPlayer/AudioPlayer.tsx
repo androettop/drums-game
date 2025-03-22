@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { SongData } from "../../types/songs";
 import { loadAudioFile, releaseFileUrl } from "../../helpers/filesLoader";
+import classNames from "classnames";
+import styles from "./AudioPlayer.module.css";
 
 interface AudioPlayerProps {
   song: SongData;
@@ -19,6 +21,9 @@ const AudioPlayer = ({
   const isPlaying = useRef<boolean>(false);
   const animationFrameRef = useRef<number | null>(null);
   const masterPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(100);
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -56,7 +61,9 @@ const AudioPlayer = ({
   // Función para actualizar el tiempo utilizando requestAnimationFrame
   const updateTime = () => {
     if (masterPlayerRef.current && onTimeUpdate) {
-      onTimeUpdate(masterPlayerRef.current.currentTime);
+      const time = masterPlayerRef.current.currentTime;
+      onTimeUpdate(time);
+      setCurrentTime(time);
     }
 
     if (isPlaying.current) {
@@ -72,7 +79,7 @@ const AudioPlayer = ({
         if (index === 0) {
           masterPlayerRef.current = player;
         } else if (masterPlayerRef.current) {
-            player.currentTime = masterPlayerRef.current.currentTime;
+          player.currentTime = masterPlayerRef.current.currentTime;
         }
       }
     });
@@ -125,9 +132,56 @@ const AudioPlayer = ({
     }
   };
 
+  // Función para cambiar la posición de la canción
+  const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+
+    playerRefs.current.forEach((player) => {
+      if (player) {
+        player.currentTime = newTime;
+      }
+    });
+
+    if (onTimeUpdate) {
+      onTimeUpdate(newTime);
+    }
+  };
+
+  // Función para cambiar el volumen
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseInt(e.target.value);
+    setVolume(newVolume);
+
+    playerRefs.current.forEach((player) => {
+      if (player) {
+        player.volume = newVolume / 100;
+      }
+    });
+  };
+
+  // Actualizar la duración cuando se cargue el primer audio
+  useEffect(() => {
+    const handleLoadedMetadata = () => {
+      if (masterPlayerRef.current) {
+        setDuration(masterPlayerRef.current.duration);
+      }
+    };
+
+    const firstPlayer = playerRefs.current[0];
+    if (firstPlayer) {
+      firstPlayer.addEventListener("loadedmetadata", handleLoadedMetadata);
+      masterPlayerRef.current = firstPlayer;
+
+      return () => {
+        firstPlayer.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      };
+    }
+  }, [trackUrls]);
+
   return (
-    <div className="audio-player">
-      <div className="controls">
+    <div className={styles.audioPlayer}>
+      <div className={styles.controls}>
         <button onClick={handlePlay} disabled={isLoading}>
           Play
         </button>
@@ -140,6 +194,47 @@ const AudioPlayer = ({
         {isLoading && <span>Cargando pistas de audio...</span>}
       </div>
 
+      {/* Position Slider */}
+      <div className={styles.sliderContainer}>
+        <label className={styles.label}>
+          Posición: {Math.floor(currentTime / 60)}:
+          {Math.floor(currentTime % 60)
+            .toString()
+            .padStart(2, "0")}
+        </label>
+        <input
+          type="range"
+          min="0"
+          max={duration || 100}
+          step="0.1"
+          value={currentTime}
+          onChange={handlePositionChange}
+          className={classNames(styles.slider, styles.positionSlider)}
+          style={
+            {
+              "--progress": `${(currentTime / (duration || 100)) * 100}%`,
+            } as React.CSSProperties
+          }
+          disabled={isLoading || duration === 0}
+        />
+      </div>
+
+      {/* Volume Slider */}
+      <div className={styles.sliderContainer}>
+        <label className={styles.label}>Volumen: {volume}%</label>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          value={volume}
+          onChange={handleVolumeChange}
+          className={classNames(styles.slider, styles.volumeSlider)}
+          style={{ "--volume": `${volume}%` } as React.CSSProperties}
+          disabled={isLoading}
+        />
+      </div>
+
       {/* Pistas de canción */}
       {song.audioFileData.songTracks.map((_track, index) => (
         <audio
@@ -148,7 +243,6 @@ const AudioPlayer = ({
           ref={(el) => {
             playerRefs.current[index] = el;
           }}
-          controls
         />
       ))}
 
@@ -161,25 +255,8 @@ const AudioPlayer = ({
             playerRefs.current[song.audioFileData.songTracks.length + index] =
               el;
           }}
-          controls
         />
       ))}
-
-      {/* slider para el volumen */}
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        step="1"
-        onChange={(e) => {
-          playerRefs.current.forEach((player) => {
-            if (player) {
-              player.volume = Number(e.target.value) / 100;
-            }
-          });
-        }}
-      />
     </div>
   );
 };
