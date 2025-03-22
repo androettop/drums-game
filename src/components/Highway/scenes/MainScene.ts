@@ -5,6 +5,13 @@ import SnareNote from "../actors/SnareNote";
 import { GAME_CONFIG } from "../config";
 import HighwayEngine from "../engine";
 import { MusicFile } from "../helpers/loaders";
+import KickNote from "../actors/KickNote";
+import Crash15Note from "../actors/Crash15Note";
+import Tom1Note from "../actors/Tom1Note";
+import Tom2Note from "../actors/Tom2Note";
+import FloorTomNote from "../actors/FloorTomNote";
+import Crash17Note from "../actors/Crash17Note";
+import Ride17Note from "../actors/Ride17Note";
 
 type ProcessedNote = {
   time: number;
@@ -23,7 +30,6 @@ class MainScene extends Scene {
   counter: number = 0;
   sprites: Record<string, ImageSource> = {};
   notes: Record<number, ProcessedNote[]> = {};
-  instruments: string[] = [];
   mainTrack: MusicFile | null = null;
   lastBatchNumber: number = -1;
 
@@ -57,10 +63,32 @@ class MainScene extends Scene {
             case "BP_HiHat_C":
               baseNote = new HiHatNote(vec(note.posX, posY));
               break;
+            case "BP_Crash15_C":
+              baseNote = new Crash15Note(vec(note.posX, posY));
+              break;
             case "BP_Snare_C":
               baseNote = new SnareNote(vec(note.posX, posY));
               break;
+            case "BP_Tom1_C":
+              baseNote = new Tom1Note(vec(note.posX, posY));
+              break;
+            case "BP_Tom2_C":
+              baseNote = new Tom2Note(vec(note.posX, posY));
+              break;
+            case "BP_FloorTom_C":
+              baseNote = new FloorTomNote(vec(note.posX, posY));
+              break;
+            case "BP_Crash17_C":
+              baseNote = new Crash17Note(vec(note.posX, posY));
+              break;
+            case "BP_Ride17_C":
+              baseNote = new Ride17Note(vec(note.posX, posY));
+              break;
+            case "BP_Kick_C":
+              baseNote = new KickNote(vec(note.posX, posY));
+              break;
             default:
+              console.log("Unknown note class: ", note.class);
               baseNote = new BaseNote(vec(note.posX, posY));
               break;
           }
@@ -81,9 +109,11 @@ class MainScene extends Scene {
     const engine = this.engine as HighwayEngine;
 
     // load instruments used in the song
-    this.instruments = GAME_CONFIG.instrumentsOrder.filter((instrument) =>
+    const instruments = GAME_CONFIG.instrumentsOrder.filter((instrument) =>
       engine.song.events.some((event) => event.name.startsWith(instrument))
     );
+
+    console.log("Instruments: ", instruments);
 
     // preprocess the song events to add it in this.notes with the key as the batch number.
     engine.song.events.forEach((event) => {
@@ -93,17 +123,25 @@ class MainScene extends Scene {
       }
 
       const instrumentClass = event.name.substring(
-          0,
-          event.name.lastIndexOf("_")
-        ),
-        instrumentIndex = this.instruments.indexOf(instrumentClass);
+        0,
+        event.name.lastIndexOf("_")
+      );
+
+      let posX = 0;
+
+      if (instrumentClass === "BP_Kick_C") {
+        posX = GAME_CONFIG.width / 2;
+      } else {
+        const instrumentIndex = instruments.indexOf(instrumentClass);
+        posX =
+          (GAME_CONFIG.width / instruments.length) * instrumentIndex +
+          GAME_CONFIG.width / (instruments.length * 2);
+      }
 
       const newNote: ProcessedNote = {
         time: Number(event.time),
         class: instrumentClass,
-        posX:
-          (GAME_CONFIG.width / this.instruments.length) * instrumentIndex +
-          GAME_CONFIG.width / (this.instruments.length * 2),
+        posX,
       };
 
       this.notes[batchNumber].push(newNote);

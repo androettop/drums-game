@@ -4,10 +4,11 @@ import noteCircleCyan from "../../../assets/NoteCircleCyan.png";
 import noteCircleOrange from "../../../assets/NoteCircleOrange.png";
 import noteCirclePurple from "../../../assets/NoteCirclePurple.png";
 import noteCircleYellow from "../../../assets/NoteCircleYellow.png";
-import noteRectCyan from "../../../assets/NoteRectRed.png";
+import noteRectCyan from "../../../assets/NoteRectCyan.png";
 import noteRectGreen from "../../../assets/NoteRectGreen.png";
 import noteRectPurple from "../../../assets/NoteRectPurple.png";
 import noteRectRed from "../../../assets/NoteRectRed.png";
+import noteKick from "../../../assets/NoteKick.png";
 
 const noteCircleCyanImg = new ImageSource(noteCircleCyan);
 const noteCircleOrangeImg = new ImageSource(noteCircleOrange);
@@ -17,6 +18,7 @@ const noteRectCyanImg = new ImageSource(noteRectCyan);
 const noteRectGreenImg = new ImageSource(noteRectGreen);
 const noteRectPurpleImg = new ImageSource(noteRectPurple);
 const noteRectRedImg = new ImageSource(noteRectRed);
+const noteKickImg = new ImageSource(noteKick);
 
 export const Resources = {
   NoteCircleCyan: noteCircleCyanImg,
@@ -27,4 +29,5 @@ export const Resources = {
   NoteRectGreen: noteRectGreenImg,
   NoteRectPurple: noteRectPurpleImg,
   NoteRectRed: noteRectRedImg,
+  NoteKick: noteKickImg,
 } as const;

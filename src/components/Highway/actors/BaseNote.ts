@@ -5,10 +5,11 @@ class BaseNote extends Actor {
   static ANIM_DURATION = 2000; // note anim duration in ms
   static NOTE_SPEED = GAME_CONFIG.height / BaseNote.ANIM_DURATION;
 
-  constructor(pos: Vector) {
+  constructor(pos: Vector, z: number = 1) {
     super({
       pos,
       anchor: Vector.Half,
+      z,
     });
   }
 
