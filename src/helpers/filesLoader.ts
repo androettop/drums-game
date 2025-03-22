@@ -1,44 +1,44 @@
 import { SongData } from "../types/songs";
 
 /**
- * Carga un archivo de audio desde la carpeta de la canción
+ * Loads an audio file from the song folder
  */
 export const loadAudioFile = async (song: SongData, trackFilename: string): Promise<string | null> => {
   if (!song.folderHandle) {
-    console.error("No hay acceso a la carpeta de la canción");
+    console.error("No access to the song folder");
     return null;
   }
 
   try {
-    // Intentar obtener el archivo directamente desde la carpeta de la canción
+    // Try to get the file directly from the song folder
     let fileHandle: FileSystemFileHandle;
     
     try {
       fileHandle = await song.folderHandle.getFileHandle(trackFilename);
     } catch (error) {
-      // Si el archivo no está directamente en la carpeta de la canción, 
-      // buscamos en una subcarpeta "audio" que suele ser común
+      // If the file is not directly in the song folder,
+      // look in a common "audio" subfolder
       try {
         const audioFolder = await song.folderHandle.getDirectoryHandle('audio');
         fileHandle = await audioFolder.getFileHandle(trackFilename);
       } catch (innerError) {
-        console.error(`No se encontró el archivo ${trackFilename}`, innerError);
+        console.error(`File ${trackFilename} not found`, innerError);
         return null;
       }
     }
 
-    // Convertir el archivo a un objeto URL
+    // Convert the file to a URL object
     const file = await fileHandle.getFile();
     return URL.createObjectURL(file);
     
   } catch (error) {
-    console.error(`Error al cargar el archivo de audio ${trackFilename}:`, error);
+    console.error(`Error loading audio file ${trackFilename}:`, error);
     return null;
   }
 };
 
 /**
- * Libera los recursos utilizados por una URL de objeto
+ * Releases the resources used by a URL object
  */
 export const releaseFileUrl = (url: string | null): void => {
   if (url) {

@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import { SongData } from "../types/songs";
 
 /**
- * Permite al usuario seleccionar una carpeta de canciones
+ * Allows the user to select a folder of songs
  */
 export const selectSongsFolder =
   async (): Promise<FileSystemDirectoryHandle | null> => {
@@ -10,13 +10,13 @@ export const selectSongsFolder =
       const directoryHandle = await window.showDirectoryPicker();
       return directoryHandle;
     } catch (error) {
-      console.error("Error al seleccionar la carpeta:", error);
+      console.error("Error selecting the folder:", error);
       return null;
     }
   };
 
 /**
- * Encuentra todos los archivos JSON en una carpeta y sus subcarpetas
+ * Finds all JSON files in a folder and its subfolders
  */
 export const findJsonFiles = async (
   directoryHandle: FileSystemDirectoryHandle
@@ -39,7 +39,7 @@ export const findJsonFiles = async (
     }
   >();
 
-  // Función recursiva para explorar carpetas
+  // Recursive function to explore folders
   async function exploreDirectory(
     handle: FileSystemDirectoryHandle,
     path: string
@@ -64,7 +64,7 @@ export const findJsonFiles = async (
 };
 
 /**
- * Lee y parsea un archivo JSON
+ * Reads and parses a JSON file
  */
 export const readJsonFile = async (
   fileHandle: FileSystemFileHandle
@@ -75,7 +75,7 @@ export const readJsonFile = async (
 };
 
 /**
- * Valida si los datos corresponden al tipo SongData
+ * Validates if the data corresponds to the SongData type
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateSongData = (data: any): data is SongData => {
@@ -90,31 +90,31 @@ export const validateSongData = (data: any): data is SongData => {
   );
 };
 
-/* Funcion para cargar todas las canciones y obtener un array de SongData */
+/* Function to load all songs and get an array of SongData */
 export const loadAllSongs = async (): Promise<SongData[]> => {
-  // Seleccionar carpeta de canciones
+  // Select folder of songs
   const folderHandle = await selectSongsFolder();
   if (!folderHandle) return [];
 
-  // Buscar archivos JSON en la carpeta
+  // Find JSON files in the folder
   const jsonFiles = await findJsonFiles(folderHandle);
   if (jsonFiles.size === 0) {
-    console.error("No se encontraron archivos JSON en la carpeta seleccionada");
+    console.error("No JSON files found in the selected folder");
     return [];
   }
 
-  // Cargar y validar cada archivo JSON
+  // Load and validate each JSON file
   const songs: SongData[] = [];
   for (const jsonFileEntry of jsonFiles.values()) {
     const { file: jsonFile } = jsonFileEntry;
 
     try {
-      // Leer y parsear el archivo
+      // Read and parse the file
       const songData = await readJsonFile(jsonFile);
 
-      // Validar que coincida con el tipo SongData
+      // Validate that it matches the SongData type
       if (validateSongData(songData)) {
-        // Añadir información sobre la carpeta de la canción
+        // Add information about the song's folder
         const pathParts = jsonFileEntry.path.split("/");
         const folderName =
           pathParts.length > 1 ? pathParts[pathParts.length - 2] : "";
@@ -154,10 +154,10 @@ export const loadAllSongs = async (): Promise<SongData[]> => {
           folderHandle: jsonFileEntry.parentDir,
         });
       } else {
-        console.error("El archivo no contiene datos de canción válidos");
+        console.error("The file does not contain valid song data");
       }
     } catch (error) {
-      console.error("Error al leer el archivo de canción:", error);
+      console.error("Error reading the song file:", error);
     }
   }
 
