@@ -26,6 +26,7 @@ const AudioPlayer = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(100);
+  const [isDrumsMuted, setIsDrumsMuted] = useState(false);
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -155,15 +156,36 @@ const AudioPlayer = ({
     const newVolume = parseInt(e.target.value);
     setVolume(newVolume);
 
-    playerRefs.current.forEach((player) => {
+    const songTracksCount = song.audioFileData.songTracks.length;
+    playerRefs.current.forEach((player, index) => {
       if (player) {
-        player.volume = newVolume / 100;
+        // Si es una pista de batería y está muteada, mantener el volumen en 0
+        if (index >= songTracksCount && isDrumsMuted) {
+          player.volume = 0;
+        } else {
+          player.volume = newVolume / 100;
+        }
       }
     });
   };
 
   const handleExit = () => {
     onExit();
+  };
+
+  // Función para mutear/desmutear las pistas de batería
+  const toggleDrumsMute = () => {
+    const newMuteState = !isDrumsMuted;
+    setIsDrumsMuted(newMuteState);
+    
+    // Actualizar el volumen de las pistas de batería
+    const songTracksCount = song.audioFileData.songTracks.length;
+    playerRefs.current.forEach((player, index) => {
+      if (player && index >= songTracksCount) {
+        // Es una pista de batería
+        player.volume = newMuteState ? 0 : volume / 100;
+      }
+    });
   };
 
   // Actualizar la duración cuando se cargue el primer audio
@@ -196,6 +218,9 @@ const AudioPlayer = ({
         </button>
         <button onClick={handleStop} disabled={isLoading}>
           Stop
+        </button>
+        <button onClick={toggleDrumsMute} disabled={isLoading} className={isDrumsMuted ? styles.activeToggle : ''}>
+          {isDrumsMuted ? 'Unmute' : 'Mute'} Drums
         </button>
         <button onClick={handleExit} disabled={isLoading}>
           Exit
