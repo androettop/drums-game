@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { SongData } from "../types/songs";
 
 /**
@@ -65,46 +66,47 @@ export const validateSongData = (data: any): data is SongData => {
   );
 };
 
-/**
- * Carga la primera canción que encuentre en la carpeta seleccionada
- */
-export const loadFirstSong = async (): Promise<SongData | null> => {
+/* Funcion para cargar todas las canciones y obtener un array de SongData */
+export const loadAllSongs = async (): Promise<SongData[]> => {
   // Seleccionar carpeta de canciones
   const folderHandle = await selectSongsFolder();
-  if (!folderHandle) return null;
+  if (!folderHandle) return [];
   
   // Buscar archivos JSON en la carpeta
   const jsonFiles = await findJsonFiles(folderHandle);
   if (jsonFiles.size === 0) {
     console.error("No se encontraron archivos JSON en la carpeta seleccionada");
-    return null;
+    return [];
   }
   
-  // Tomar el primer archivo JSON encontrado
-  const firstJsonFileEntry = [...jsonFiles.values()][0];
-  const { file: firstJsonFile, parentDir, path } = firstJsonFileEntry;
-  
-  try {
-    // Leer y parsear el archivo
-    const songData = await readJsonFile(firstJsonFile);
+  // Cargar y validar cada archivo JSON
+  const songs = [];
+  for (const jsonFileEntry of jsonFiles.values()) {
+    const { file: jsonFile } = jsonFileEntry;
     
-    // Validar que coincida con el tipo SongData
-    if (validateSongData(songData)) {
-      // Añadir información sobre la carpeta de la canción
-      const pathParts = path.split('/');
-      const folderName = pathParts.length > 1 ? pathParts[pathParts.length - 2] : '';
+    try {
+      // Leer y parsear el archivo
+      const songData = await readJsonFile(jsonFile);
       
-      return {
-        ...songData,
-        folderName,
-        folderHandle: parentDir
-      };
-    } else {
-      console.error("El archivo no contiene datos de canción válidos");
-      return null;
+      // Validar que coincida con el tipo SongData
+      if (validateSongData(songData)) {
+        // Añadir información sobre la carpeta de la canción
+        const pathParts = jsonFileEntry.path.split('/');
+        const folderName = pathParts.length > 1 ? pathParts[pathParts.length - 2] : '';
+        
+        songs.push({
+          ...songData,
+          id: uuid(),
+          folderName,
+          folderHandle: jsonFileEntry.parentDir
+        });
+      } else {
+        console.error("El archivo no contiene datos de canción válidos");
+      }
+    } catch (error) {
+      console.error("Error al leer el archivo de canción:", error);
     }
-  } catch (error) {
-    console.error("Error al leer el archivo de canción:", error);
-    return null;
   }
+  
+  return songs;
 };

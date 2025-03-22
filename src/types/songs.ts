@@ -32,6 +32,7 @@ export type BPMEventData = {
 }
 
 export type SongData = {
+    id: string,
     version: number,
     recordingMetadata: RecordingMetadata,
     audioFileData: AudioFileData,

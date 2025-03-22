@@ -1,10 +1,12 @@
 import { useState } from "react";
 import GamePlayer from "./components/GamePlayer/GamePlayer";
-import { loadFirstSong } from "./helpers/songLoader";
 import { SongData } from "./types/songs";
+import { loadAllSongs } from "./helpers/songLoader";
+import SmallCover from "./components/SmallCover/SmallCover";
 
 function App() {
-  const [song, setSong] = useState<SongData | null>(null);
+  const [selectedSong, setSelectedSong] = useState<SongData | null>(null);
+  const [songList, setSongList] = useState<SongData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,45 +14,57 @@ function App() {
     setLoading(true);
     setError(null);
 
-    try {
-      const songData = await loadFirstSong();
-      if (songData) {
-        setSong(songData);
-      } else {
-        setError("No se pudo cargar ninguna canción");
-      }
-    } catch (err) {
-      setError(
-        `Error al cargar las canciones: ${
-          err instanceof Error ? err.message : String(err)
-        }`
-      );
-    } finally {
-      setLoading(false);
-    }
+    loadAllSongs()
+      .then((songs) => {
+        setSongList(songs);
+      })
+      .catch((err) => {
+        setError(
+          `Error al cargar las canciones: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleExit = () => {
-    setSong(null);
+    setSelectedSong(null);
   };
 
-  return (
-    <>
-      {song ? (
-        <GamePlayer song={song} onExit={handleExit} />
-      ) : (
-        <div>
-          No hay canción seleccionada. Por favor, elija una carpeta de
-          canciones.
-          <button onClick={handleSelectSongs} disabled={loading}>
-            {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
-          </button>
-        </div>
-      )}
+  if (selectedSong) {
+    return <GamePlayer song={selectedSong} onExit={handleExit} />;
+  } else {
+    return (
+      <div>
+        <button onClick={handleSelectSongs} disabled={loading}>
+          {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
+        </button>
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
-    </>
-  );
+        {songList ? (
+          songList.map((song) => (
+            <SmallCover
+              key={song.id}
+              song={song}
+              onClick={() => {
+                console.log(song)
+                setSelectedSong(song)
+              }}
+            />
+          ))
+        ) : (
+          <p>
+            No hay canción seleccionada. Por favor, elija una carpeta de
+            canciones.
+          </p>
+        )}
+
+        {error && <div>{error}</div>}
+      </div>
+    );
+  }
 }
 
 export default App;
