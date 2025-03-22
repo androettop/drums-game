@@ -7,6 +7,7 @@ import { SongData } from "../types/songs";
 export const selectSongsFolder =
   async (): Promise<FileSystemDirectoryHandle | null> => {
     try {
+      // @ts-expect-error Typescript doesn't know about showDirectoryPicker
       const directoryHandle = await window.showDirectoryPicker();
       return directoryHandle;
     } catch (error) {
@@ -44,6 +45,7 @@ export const findJsonFiles = async (
     handle: FileSystemDirectoryHandle,
     path: string
   ) {
+    // @ts-expect-error Typescript doesn't know about entries
     for await (const [name, entry] of handle.entries()) {
       const newPath = path ? `${path}/${name}` : name;
 
@@ -68,6 +70,7 @@ export const findJsonFiles = async (
  */
 export const readJsonFile = async (
   fileHandle: FileSystemFileHandle
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
   const file = await fileHandle.getFile();
   const contents = await file.text();
