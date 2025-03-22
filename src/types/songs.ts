@@ -32,14 +32,14 @@ export type BPMEventData = {
 }
 
 export type SongData = {
-    id: string,
     version: number,
     recordingMetadata: RecordingMetadata,
     audioFileData: AudioFileData,
     instruments: InstrumentData[],
     events: EventData[],
     bpmEvents: BPMEventData[],
-    // Campos adicionales para manejar los archivos (no existen en el JSON original)
+    // Additional fields to handle files (not present in the original JSON)
+    id: string,
     folderName?: string,
     folderHandle?: FileSystemDirectoryHandle
 }
