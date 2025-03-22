@@ -17,7 +17,7 @@ class HighwayEngine extends Engine {
       canvasElement: canvas,
       resolution: { width: GAME_CONFIG.width, height: GAME_CONFIG.height },
       viewport: { width: GAME_CONFIG.width, height: GAME_CONFIG.height },
-      backgroundColor: Color.Black,
+      backgroundColor: Color.fromHex("#111111"),
     });
 
     this.song = song;

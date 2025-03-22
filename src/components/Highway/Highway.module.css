@@ -1,12 +1,13 @@
 .highway {
-    display: flex;
-    justify-content: center;
-    align-items: start;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  height: 100%;
 }
 
 .highway canvas {
   /* 3d effect */
   transform: perspective(1000px) rotateX(30deg);
   margin-top: -80px;
+  box-shadow: 0 30px 150px rgb(86, 48, 114, 0.5);
 }

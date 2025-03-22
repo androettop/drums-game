@@ -12,6 +12,7 @@ import Tom2Note from "../actors/Tom2Note";
 import FloorTomNote from "../actors/FloorTomNote";
 import Crash17Note from "../actors/Crash17Note";
 import Ride17Note from "../actors/Ride17Note";
+import HighwayBg from "../actors/HighwayBg";
 
 type ProcessedNote = {
   time: number;
@@ -146,6 +147,9 @@ class MainScene extends Scene {
 
       this.notes[batchNumber].push(newNote);
     });
+
+    // Add the BG
+    this.add(new HighwayBg());
 
     // start all tracks
     [...engine.songTracks, ...engine.drumTracks].forEach((track, index) => {

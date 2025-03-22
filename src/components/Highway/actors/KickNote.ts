@@ -4,7 +4,7 @@ import { Resources } from "./resources";
 
 class KickNote extends BaseNote {
   constructor(pos: Vector) {
-    super(pos, 0);
+    super(pos, 5);
   }
 
   public onInitialize() {
