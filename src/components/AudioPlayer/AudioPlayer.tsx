@@ -6,9 +6,9 @@ import styles from "./AudioPlayer.module.css";
 
 interface AudioPlayerProps {
   song: SongData;
-  onTimeUpdate?: (time: number) => void; // Callback para actualizar el tiempo
-  onPlayingChange?: (isPlaying: boolean) => void; // Callback para actualizar el estado de reproducción
-  onExit: () => void; // Callback para salir del juego
+  onTimeUpdate?: (time: number) => void; // Callback to update the time
+  onPlayingChange?: (isPlaying: boolean) => void; // Callback to update the playing state
+  onExit: () => void; // Callback to exit the game
 }
 
 const AudioPlayer = ({
@@ -32,17 +32,17 @@ const AudioPlayer = ({
     const loadTracks = async () => {
       setIsLoading(true);
 
-      // Cargar las pistas de canción
+      // Load song tracks
       const songTrackPromises = song.audioFileData.songTracks.map((track) =>
         loadAudioFile(song, track)
       );
 
-      // Cargar las pistas de batería
+      // Load drum tracks
       const drumTrackPromises = song.audioFileData.drumTracks.map((track) =>
         loadAudioFile(song, track)
       );
 
-      // Esperar a que todas las pistas se carguen
+      // Wait for all tracks to load
       const songUrls = await Promise.all(songTrackPromises);
       const drumUrls = await Promise.all(drumTrackPromises);
 
@@ -52,7 +52,7 @@ const AudioPlayer = ({
 
     loadTracks();
 
-    // Limpiar las URLs cuando el componente se desmonte
+    // Clean up URLs when the component unmounts
     return () => {
       trackUrls.forEach((url) => releaseFileUrl(url));
       if (animationFrameRef.current) {
@@ -61,7 +61,7 @@ const AudioPlayer = ({
     };
   }, [song]);
 
-  // Función para actualizar el tiempo utilizando requestAnimationFrame
+  // Function to update the time using requestAnimationFrame
   const updateTime = () => {
     if (masterPlayerRef.current && onTimeUpdate) {
       const time = masterPlayerRef.current.currentTime;
@@ -78,7 +78,7 @@ const AudioPlayer = ({
     playerRefs.current.forEach((player, index) => {
       if (player) {
         player.play();
-        // Guardar el primer reproductor como maestro para el tiempo
+        // Set the first player as the master for time
         if (index === 0) {
           masterPlayerRef.current = player;
         } else if (masterPlayerRef.current) {
@@ -87,9 +87,9 @@ const AudioPlayer = ({
       }
     });
     isPlaying.current = true;
-    // Iniciar la actualización del tiempo
+    // Start time update
     animationFrameRef.current = requestAnimationFrame(updateTime);
-    // Notificar cambio de estado
+    // Notify state change
     if (onPlayingChange) {
       onPlayingChange(true);
     }
@@ -102,12 +102,12 @@ const AudioPlayer = ({
       }
     });
     isPlaying.current = false;
-    // Detener la actualización del tiempo
+    // Stop time update
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
-    // Notificar cambio de estado
+    // Notify state change
     if (onPlayingChange) {
       onPlayingChange(false);
     }
@@ -121,7 +121,7 @@ const AudioPlayer = ({
       }
     });
     isPlaying.current = false;
-    // Detener la actualización del tiempo y reiniciar a cero
+    // Stop time update and reset to zero
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
@@ -129,13 +129,13 @@ const AudioPlayer = ({
     if (onTimeUpdate) {
       onTimeUpdate(0);
     }
-    // Notificar cambio de estado
+    // Notify state change
     if (onPlayingChange) {
       onPlayingChange(false);
     }
   };
 
-  // Función para cambiar la posición de la canción
+  // Function to change the song position
   const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
     setCurrentTime(newTime);
@@ -151,7 +151,7 @@ const AudioPlayer = ({
     }
   };
 
-  // Función para cambiar el volumen
+  // Function to change the volume
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseInt(e.target.value);
     setVolume(newVolume);
@@ -159,7 +159,7 @@ const AudioPlayer = ({
     const songTracksCount = song.audioFileData.songTracks.length;
     playerRefs.current.forEach((player, index) => {
       if (player) {
-        // Si es una pista de batería y está muteada, mantener el volumen en 0
+        // If it's a drum track and muted, keep the volume at 0
         if (index >= songTracksCount && isDrumsMuted) {
           player.volume = 0;
         } else {
@@ -173,22 +173,22 @@ const AudioPlayer = ({
     onExit();
   };
 
-  // Función para mutear/desmutear las pistas de batería
+  // Function to mute/unmute drum tracks
   const toggleDrumsMute = () => {
     const newMuteState = !isDrumsMuted;
     setIsDrumsMuted(newMuteState);
     
-    // Actualizar el volumen de las pistas de batería
+    // Update the volume of drum tracks
     const songTracksCount = song.audioFileData.songTracks.length;
     playerRefs.current.forEach((player, index) => {
       if (player && index >= songTracksCount) {
-        // Es una pista de batería
+        // It's a drum track
         player.volume = newMuteState ? 0 : volume / 100;
       }
     });
   };
 
-  // Actualizar la duración cuando se cargue el primer audio
+  // Update the duration when the first audio is loaded
   useEffect(() => {
     const handleLoadedMetadata = () => {
       if (masterPlayerRef.current) {
@@ -225,13 +225,13 @@ const AudioPlayer = ({
         <button onClick={handleExit} disabled={isLoading}>
           Exit
         </button>
-        {isLoading && <span>Cargando pistas de audio...</span>}
+        {isLoading && <span>Loading audio tracks...</span>}
       </div>
 
       {/* Position Slider */}
       <div className={styles.sliderContainer}>
         <label className={styles.label}>
-          Posición: {Math.floor(currentTime / 60)}:
+          Position: {Math.floor(currentTime / 60)}:
           {Math.floor(currentTime % 60)
             .toString()
             .padStart(2, "0")}
@@ -255,7 +255,7 @@ const AudioPlayer = ({
 
       {/* Volume Slider */}
       <div className={styles.sliderContainer}>
-        <label className={styles.label}>Volumen: {volume}%</label>
+        <label className={styles.label}>Volume: {volume}%</label>
         <input
           type="range"
           min="0"
@@ -269,7 +269,7 @@ const AudioPlayer = ({
         />
       </div>
 
-      {/* Pistas de canción */}
+      {/* Song Tracks */}
       {song.audioFileData.songTracks.map((_track, index) => (
         <audio
           key={`song-${index}`}
@@ -280,7 +280,7 @@ const AudioPlayer = ({
         />
       ))}
 
-      {/* Pistas de batería */}
+      {/* Drum Tracks */}
       {song.audioFileData.drumTracks.map((_track, index) => (
         <audio
           key={`drum-${index}`}
