@@ -51,9 +51,10 @@ interface HighwayProps {
 }
 
 const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
-
-  const instrumentsInSong = ORDERED_INSTRUMENTS.filter((instrument) =>
-    song.events.some((event) => event.name.startsWith(instrument)) && instrument !== "BP_Kick_C"
+  const instrumentsInSong = ORDERED_INSTRUMENTS.filter(
+    (instrument) =>
+      song.events.some((event) => event.name.startsWith(instrument)) &&
+      instrument !== "BP_Kick_C"
   );
 
   const [notes, setNotes] = useState<Record<string, EventData[]>>(() => {
