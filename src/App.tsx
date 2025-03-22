@@ -40,8 +40,8 @@ function App() {
   } else {
     return (
       <div className={styles.container}>
-        <button 
-          onClick={handleSelectSongs} 
+        <button
+          onClick={handleSelectSongs}
           disabled={loading}
           className={styles.selectButton}
         >
@@ -55,7 +55,6 @@ function App() {
                 key={song.id}
                 song={song}
                 onClick={() => {
-                  console.log(song);
                   setSelectedSong(song);
                 }}
               />
@@ -63,8 +62,10 @@ function App() {
           </div>
         ) : (
           <p className={styles.noSongsMessage}>
-            There are no songs loaded. Click the button to select a folder. <br />
-            You can use the same songs as in the <a href="https://paradiddleapp.com/">Paradiddle VR game </a>
+            There are no songs loaded. Click the button to select a folder.{" "}
+            <br />
+            You can use the same songs as in the{" "}
+            <a href="https://paradiddleapp.com/">Paradiddle VR game </a>
           </p>
         )}
 
