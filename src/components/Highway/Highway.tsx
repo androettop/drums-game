@@ -7,12 +7,13 @@ import styles from "./Highway.module.css";
 // Configuración principal
 const CONFIG = {
   DIVIDER_POSITION: 10, // percentage, keep in sync with CSS
-  ANIM_DURATION: 3, // seconds
+  ANIM_DURATION: 2, // seconds
 };
 
 // Colores de los instrumentos
 const INSTRUMENT_COLORS = {
   BP_HiHat_C: "#33FFF5", // cyan
+  BP_Crash15_C: "#FF33F5", // rosa
   BP_Snare_C: "#FF3333", // rojo
   BP_Tom1_C: "#33FFAA", // turquesa
   BP_Tom2_C: "#118811", // verde oscuro
@@ -20,7 +21,6 @@ const INSTRUMENT_COLORS = {
   BP_Crash17_C: "#FF5733", // naranja
   BP_Ride17_C: "#F5FF33", // amarillo
   BP_Kick_C: "rgba(64, 84, 182, 0.6)", // azul
-  BP_Crash15_C: "#FF33F5", // rosa
   BP_Ride20_C: "#FFAA33", // naranja claro
 };
 
@@ -35,13 +35,13 @@ const CIRCLE_INSTRUMENTS = [
 // Crear un array de las clases de instrumento en el orden que aparecen en INSTRUMENT_COLORS
 const ORDERED_INSTRUMENTS = [
   "BP_HiHat_C",
+  "BP_Crash15_C",
   "BP_Snare_C",
   "BP_Tom1_C",
   "BP_Tom2_C",
   "BP_FloorTom_C",
   "BP_Crash17_C",
   "BP_Ride17_C",
-  "BP_Crash15_C",
   "BP_Ride20_C",
 ];
 interface HighwayProps {
@@ -51,9 +51,14 @@ interface HighwayProps {
 }
 
 const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
+
+  const instrumentsInSong = ORDERED_INSTRUMENTS.filter((instrument) =>
+    song.events.some((event) => event.name.startsWith(instrument)) && instrument !== "BP_Kick_C"
+  );
+
   const [notes, setNotes] = useState<Record<string, EventData[]>>(() => {
     const initialNotes: Record<string, EventData[]> = {};
-    ORDERED_INSTRUMENTS.forEach((instrument) => {
+    instrumentsInSong.forEach((instrument) => {
       initialNotes[instrument] = [];
     });
     initialNotes["BP_Kick_C"] = [];
@@ -72,7 +77,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
       );
       const notesMap: Record<string, EventData[]> = {};
 
-      ORDERED_INSTRUMENTS.forEach((instrument) => {
+      instrumentsInSong.forEach((instrument) => {
         notesMap[instrument] = [];
       });
       notesMap["BP_Kick_C"] = [];
@@ -124,7 +129,7 @@ const Highway = ({ song, isPlaying, time = 0 }: HighwayProps) => {
 
       {/* Notes (no kick) */}
 
-      {ORDERED_INSTRUMENTS.map((instrument) => (
+      {instrumentsInSong.map((instrument) => (
         <div className={styles.instNotesContainer} key={instrument}>
           {notes[instrument].map((note) => (
             <div
