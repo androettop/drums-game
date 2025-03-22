@@ -1,17 +1,12 @@
 import { useState } from "react";
-import AudioPlayer from "./components/AudioPlayer/AudioPlayer";
-import Highway from "./components/Highway/Highway";
+import GamePlayer from "./components/GamePlayer/GamePlayer";
 import { loadFirstSong } from "./helpers/songLoader";
 import { SongData } from "./types/songs";
-import CoverBg from "./components/CoverBg/CoverBg";
 
 function App() {
   const [song, setSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
 
   const handleSelectSongs = async () => {
     setLoading(true);
@@ -35,40 +30,25 @@ function App() {
     }
   };
 
-  // Manejador para actualizar el tiempo actual
-  const handleTimeUpdate = (time: number) => {
-    setCurrentTime(time);
-  };
-
-  // Manejador para actualizar el estado de reproducción
-  const handlePlayingChange = (playing: boolean) => {
-    setIsPlaying(playing);
+  const handleExit = () => {
+    setSong(null);
   };
 
   return (
     <>
-      <button onClick={handleSelectSongs} disabled={loading}>
-        {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
-      </button>
-
-      {error && <div style={{ color: "red" }}>{error}</div>}
-
       {song ? (
-        <>
-          <Highway song={song} time={currentTime} isPlaying={isPlaying} />
-          <AudioPlayer 
-            song={song} 
-            onTimeUpdate={handleTimeUpdate} 
-            onPlayingChange={handlePlayingChange} 
-          />
-          <CoverBg song={song} />
-        </>
+        <GamePlayer song={song} onExit={handleExit} />
       ) : (
         <div>
           No hay canción seleccionada. Por favor, elija una carpeta de
           canciones.
+          <button onClick={handleSelectSongs} disabled={loading}>
+            {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
+          </button>
         </div>
       )}
+
+      {error && <div style={{ color: "red" }}>{error}</div>}
     </>
   );
 }

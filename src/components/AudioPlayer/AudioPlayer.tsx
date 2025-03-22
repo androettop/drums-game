@@ -8,12 +8,14 @@ interface AudioPlayerProps {
   song: SongData;
   onTimeUpdate?: (time: number) => void; // Callback para actualizar el tiempo
   onPlayingChange?: (isPlaying: boolean) => void; // Callback para actualizar el estado de reproducción
+  onExit: () => void; // Callback para salir del juego
 }
 
 const AudioPlayer = ({
   song,
   onTimeUpdate,
   onPlayingChange,
+  onExit,
 }: AudioPlayerProps) => {
   const playerRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const [trackUrls, setTrackUrls] = useState<(string | null)[]>([]);
@@ -160,6 +162,10 @@ const AudioPlayer = ({
     });
   };
 
+  const handleExit = () => {
+    onExit();
+  };
+
   // Actualizar la duración cuando se cargue el primer audio
   useEffect(() => {
     const handleLoadedMetadata = () => {
@@ -190,6 +196,9 @@ const AudioPlayer = ({
         </button>
         <button onClick={handleStop} disabled={isLoading}>
           Stop
+        </button>
+        <button onClick={handleExit} disabled={isLoading}>
+          Exit
         </button>
         {isLoading && <span>Cargando pistas de audio...</span>}
       </div>
