@@ -1,6 +1,6 @@
 .highway {
-  height: 100%;
   max-height: calc(100% - 300px);
+  max-width: 70%;
   aspect-ratio: 3/4;
   background: linear-gradient(180deg, #333, #222);
   display: flex;
