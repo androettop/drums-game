@@ -40,8 +40,10 @@ const SmallCover = ({ song, onClick }: SmallCoverProps) => {
       role="button"
       tabIndex={0}
     >
-      <div className={styles.title}>{song.recordingMetadata.title}</div>
-      <div className={styles.artist}>{song.recordingMetadata.artist}</div>
+      <div className={styles.details}>
+        <div className={styles.title}>{song.recordingMetadata.title}</div>
+        <div className={styles.artist}>{song.recordingMetadata.artist} - {"🤘".repeat(song.recordingMetadata.complexity)}</div>
+      </div>
     </div>
   );
 };

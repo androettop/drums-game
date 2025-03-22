@@ -44,16 +44,18 @@ function App() {
         </button>
 
         {songList ? (
-          songList.map((song) => (
-            <SmallCover
-              key={song.id}
-              song={song}
-              onClick={() => {
-                console.log(song)
-                setSelectedSong(song)
-              }}
-            />
-          ))
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+            {songList.map((song) => (
+              <SmallCover
+                key={song.id}
+                song={song}
+                onClick={() => {
+                  console.log(song);
+                  setSelectedSong(song);
+                }}
+              />
+            ))}
+          </div>
         ) : (
           <p>
             No hay canción seleccionada. Por favor, elija una carpeta de
