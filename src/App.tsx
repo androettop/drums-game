@@ -3,6 +3,7 @@ import GamePlayer from "./components/GamePlayer/GamePlayer";
 import { SongData } from "./types/songs";
 import { loadAllSongs } from "./helpers/songLoader";
 import SmallCover from "./components/SmallCover/SmallCover";
+import styles from "./App.module.css";
 
 function App() {
   const [selectedSong, setSelectedSong] = useState<SongData | null>(null);
@@ -38,13 +39,17 @@ function App() {
     return <GamePlayer song={selectedSong} onExit={handleExit} />;
   } else {
     return (
-      <div>
-        <button onClick={handleSelectSongs} disabled={loading}>
+      <div className={styles.container}>
+        <button 
+          onClick={handleSelectSongs} 
+          disabled={loading}
+          className={styles.selectButton}
+        >
           {loading ? "Cargando..." : "Seleccionar carpeta de canciones"}
         </button>
 
         {songList ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+          <div className={styles.songGrid}>
             {songList.map((song) => (
               <SmallCover
                 key={song.id}
@@ -57,13 +62,13 @@ function App() {
             ))}
           </div>
         ) : (
-          <p>
+          <p className={styles.noSongsMessage}>
             No hay canción seleccionada. Por favor, elija una carpeta de
             canciones.
           </p>
         )}
 
-        {error && <div>{error}</div>}
+        {error && <div className={styles.errorMessage}>{error}</div>}
       </div>
     );
   }
