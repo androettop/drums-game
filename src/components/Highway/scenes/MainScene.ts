@@ -92,15 +92,18 @@ class MainScene extends Scene {
         this.notes[batchNumber] = [];
       }
 
-      const instrumentClass = event.name.substring(0, event.name.lastIndexOf("_")),
-
-      instrumentIndex = this.instruments.indexOf(instrumentClass);
-
+      const instrumentClass = event.name.substring(
+          0,
+          event.name.lastIndexOf("_")
+        ),
+        instrumentIndex = this.instruments.indexOf(instrumentClass);
 
       const newNote: ProcessedNote = {
         time: Number(event.time),
         class: instrumentClass,
-        posX: GAME_CONFIG.width / (this.instruments.length) * (instrumentIndex) + GAME_CONFIG.width / (this.instruments.length * 2),
+        posX:
+          (GAME_CONFIG.width / this.instruments.length) * instrumentIndex +
+          GAME_CONFIG.width / (this.instruments.length * 2),
       };
 
       this.notes[batchNumber].push(newNote);
@@ -119,7 +122,11 @@ class MainScene extends Scene {
    * Each time the scene is exited (Engine.goToScene)
    */
   public onDeactivate() {
+    const engine = this.engine as HighwayEngine;
     // stop music
+    [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
+      track.stop();
+    });
   }
 }
 

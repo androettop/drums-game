@@ -1,9 +1,9 @@
 import { useState } from "react";
-import GamePlayer from "./components/GamePlayer/GamePlayer";
-import { SongData } from "./types/songs";
-import { loadAllSongs } from "./helpers/songLoader";
-import SmallCover from "./components/SmallCover/SmallCover";
 import styles from "./App.module.css";
+import Highway from "./components/Highway/Highway";
+import SmallCover from "./components/SmallCover/SmallCover";
+import { loadAllSongs } from "./helpers/songLoader";
+import { SongData } from "./types/songs";
 
 function App() {
   const [selectedSong, setSelectedSong] = useState<SongData | null>(null);
@@ -32,10 +32,6 @@ function App() {
       });
   };
 
-  const handleExit = () => {
-    setSelectedSong(null);
-  };
-
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -49,7 +45,7 @@ function App() {
   return (
     <>
       {selectedSong ? (
-        <GamePlayer song={selectedSong} onExit={handleExit} />
+        <Highway song={selectedSong} />
       ) : (
         <div className={styles.container}>
           <button
@@ -90,7 +86,6 @@ function App() {
       </button>
     </>
   );
-  
 }
 
 export default App;
