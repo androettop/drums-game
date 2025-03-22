@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { SongData } from "../../types/songs";
 import HighwayEngine from "./engine";
+import styles from "./Highway.module.css";
 
 interface HighwayProps {
   song: SongData;
@@ -25,7 +26,11 @@ const Highway = ({ song }: HighwayProps) => {
     };
   }, [song]);
 
-  return <canvas ref={canvasRef} />;
+  return (
+    <div className={styles.highway}>
+      <canvas ref={canvasRef} />
+    </div>
+  );
 };
 
 export default Highway;
