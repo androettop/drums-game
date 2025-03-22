@@ -32,7 +32,7 @@
 .note {
   opacity: 0;
   width: 90%;
-  height: 2.5vh;
+  height: 25px;
   background-color: #444;
   position: absolute;
   left: 50%;
@@ -45,7 +45,7 @@
   /* the real duration is set in the JS */
   animation-duration: 0s;
 
-  border-radius: 0.5vh;
+  border-radius: 4px;
   box-shadow: inset 0 -10px 20px 4px rgba(0, 0, 0, 0.3), 0 3px 20px 0px rgba(0, 0, 0, 0.5);
   z-index: 20;
 }
@@ -53,7 +53,7 @@
 
 .note.kick {
   width: 100%;
-  height: 1vh;
+  height: 10px;
   box-shadow: none;
   opacity: 0;
   z-index: 15;
@@ -66,8 +66,8 @@
 }
 
 .note.circle {
-  width: 3.5vh;
-  height: 3.5vh;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
 }
 
@@ -87,10 +87,8 @@
   }
   10% {
     opacity: 1;
-    transform: translate(-50%, -50%) translateY(90px);
   }
   90% {
-    transform: translate(-50%, -50%) translateY(810px);
     opacity: 1;
   }
   100% {
