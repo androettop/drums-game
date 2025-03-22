@@ -13,12 +13,12 @@ const GamePlayer = ({ song, onExit }: GamePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
 
-  // Manejador para actualizar el tiempo actual
+  // Handler to update the current time
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
   };
 
-  // Manejador para actualizar el estado de reproducción
+  // Handler to update the playing state
   const handlePlayingChange = (playing: boolean) => {
     setIsPlaying(playing);
   };
