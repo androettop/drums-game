@@ -1,5 +1,6 @@
 import { Actor, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../../config";
+import Game from "../../engine";
 
 class BaseNote extends Actor {
   constructor(pos: Vector, z: number = 10) {
@@ -7,7 +8,33 @@ class BaseNote extends Actor {
       pos,
       anchor: Vector.Half,
       z,
+      opacity: 1,
     });
+  }
+
+  public onPostUpdate(engine: Game, elapsed: number): void {
+    super.onPostUpdate(engine, elapsed);
+
+    let opacity = 0;
+    if (
+      this.pos.y >= GAME_CONFIG.dividerPosition &&
+      this.pos.y <= GAME_CONFIG.highwayHeight - GAME_CONFIG.dividerPosition
+    ) {
+      opacity = 0.98;
+    } else if (this.pos.y > 0 && this.pos.y < GAME_CONFIG.dividerPosition) {
+      opacity = this.pos.y / GAME_CONFIG.dividerPosition;
+    } else if (
+      this.pos.y > GAME_CONFIG.highwayHeight - GAME_CONFIG.dividerPosition &&
+      this.pos.y < GAME_CONFIG.highwayHeight
+    ) {
+      opacity =
+        1 -
+        (this.pos.y -
+          (GAME_CONFIG.highwayHeight - GAME_CONFIG.dividerPosition)) /
+          GAME_CONFIG.dividerPosition;
+    }
+
+    this.graphics.opacity = opacity;
   }
 
   public onInitialize() {
