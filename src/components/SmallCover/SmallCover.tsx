@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { loadFile, releaseFileUrl } from "../../helpers/filesLoader";
 import { SongData } from "../../types/songs";
 import useStaticHandler from "../hooks/useStaticHandler";
 import styles from "./SmallCover.module.css";
+import { loadFile, releaseFileUrl } from "../../game/helpers/filesLoader";
 
 interface SmallCoverProps {
   song: SongData;

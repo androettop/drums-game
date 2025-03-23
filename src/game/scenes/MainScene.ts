@@ -1,17 +1,17 @@
 import { ImageSource, Scene, vec } from "excalibur";
-import BaseNote from "../actors/BaseNote";
-import HiHatNote from "../actors/HiHatNote";
-import SnareNote from "../actors/SnareNote";
+import BaseNote from "../actors/Notes/BaseNote";
+import HiHatNote from "../actors/Notes/HiHatNote";
+import SnareNote from "../actors/Notes/SnareNote";
 import { GAME_CONFIG } from "../config";
-import HighwayEngine from "../engine";
+import Game from "../engine";
 import { MusicFile } from "../helpers/loaders";
-import KickNote from "../actors/KickNote";
-import Crash15Note from "../actors/Crash15Note";
-import Tom1Note from "../actors/Tom1Note";
-import Tom2Note from "../actors/Tom2Note";
-import FloorTomNote from "../actors/FloorTomNote";
-import Crash17Note from "../actors/Crash17Note";
-import Ride17Note from "../actors/Ride17Note";
+import KickNote from "../actors/Notes/KickNote";
+import Crash15Note from "../actors/Notes/Crash15Note";
+import Tom1Note from "../actors/Notes/Tom1Note";
+import Tom2Note from "../actors/Notes/Tom2Note";
+import FloorTomNote from "../actors/Notes/FloorTomNote";
+import Crash17Note from "../actors/Notes/Crash17Note";
+import Ride17Note from "../actors/Notes/Ride17Note";
 import HighwayBg from "../actors/HighwayBg";
 
 type ProcessedNote = {
@@ -34,7 +34,7 @@ class MainScene extends Scene {
   mainTrack: MusicFile | null = null;
   lastBatchNumber: number = -1;
 
-  public onPostUpdate(engine: HighwayEngine, elapsed: number): void {
+  public onPostUpdate(engine: Game, elapsed: number): void {
     super.onPostUpdate(engine, elapsed);
 
     const currentTime =
@@ -107,7 +107,7 @@ class MainScene extends Scene {
    * Each time the scene is entered (Engine.goToScene)
    */
   public onActivate() {
-    const engine = this.engine as HighwayEngine;
+    const engine = this.engine as Game;
 
     // load instruments used in the song
     const instruments = GAME_CONFIG.instrumentsOrder.filter((instrument) =>
@@ -164,7 +164,7 @@ class MainScene extends Scene {
    * Each time the scene is exited (Engine.goToScene)
    */
   public onDeactivate() {
-    const engine = this.engine as HighwayEngine;
+    const engine = this.engine as Game;
     // stop music
     [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
       track.stop();

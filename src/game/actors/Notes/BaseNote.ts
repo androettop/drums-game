@@ -1,5 +1,5 @@
 import { Actor, vec, Vector } from "excalibur";
-import { GAME_CONFIG } from "../config";
+import { GAME_CONFIG } from "../../config";
 
 class BaseNote extends Actor {
   static ANIM_DURATION = 2000; // note anim duration in ms

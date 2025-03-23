@@ -1,12 +1,12 @@
 import { Color, Engine } from "excalibur";
-import { SongData } from "../../types/songs";
-import { Resources as NotesResources } from "./actors/resources";
+import { SongData } from "../types/songs";
+import { Resources as NotesResources } from "./resources";
 import { GAME_CONFIG } from "./config";
 import { ImageFile, MusicFile } from "./helpers/loaders";
 import { createLoader } from "./resources";
 import MainScene from "./scenes/MainScene";
 
-class HighwayEngine extends Engine {
+class Game extends Engine {
   song: SongData;
   songTracks: MusicFile[] = [];
   drumTracks: MusicFile[] = [];
@@ -48,4 +48,4 @@ class HighwayEngine extends Engine {
   }
 }
 
-export default HighwayEngine;
+export default Game;

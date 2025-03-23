@@ -1,18 +1,18 @@
 import { Sprite, Vector } from "excalibur";
 import BaseNote from "./BaseNote";
-import { Resources } from "./resources";
+import { Resources } from "../../resources";
 
-class KickNote extends BaseNote {
+class Tom1Note extends BaseNote {
   constructor(pos: Vector) {
-    super(pos, 5);
+    super(pos);
   }
 
   public onInitialize() {
-    const sprite = Sprite.from(Resources.NoteKick);
+    const sprite = Sprite.from(Resources.NoteRectCyan);
     this.graphics.use(sprite);
 
     super.onInitialize();
   }
 }
 
-export default KickNote;
+export default Tom1Note;

@@ -1,19 +1,19 @@
 import { useEffect, useRef } from "react";
+import styles from "./GameLoader.module.css";
+import Game from "../../game/engine";
 import { SongData } from "../../types/songs";
-import HighwayEngine from "./engine";
-import styles from "./Highway.module.css";
 
-interface HighwayProps {
+interface GameLoaderProps {
   song: SongData;
 }
 
-const Highway = ({ song }: HighwayProps) => {
+const GameLoader = ({ song }: GameLoaderProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineRef = useRef<HighwayEngine | null>(null);
+  const engineRef = useRef<Game | null>(null);
 
   useEffect(() => {
     if (canvasRef.current && !engineRef.current) {
-      engineRef.current = new HighwayEngine(canvasRef.current, song);
+      engineRef.current = new Game(canvasRef.current, song);
       engineRef.current.initialize();
     }
     const engine = engineRef.current;
@@ -27,10 +27,10 @@ const Highway = ({ song }: HighwayProps) => {
   }, [song]);
 
   return (
-    <div className={styles.highway}>
+    <div className={styles["game-container"]}>
       <canvas ref={canvasRef} />
     </div>
   );
 };
 
-export default Highway;
+export default GameLoader;

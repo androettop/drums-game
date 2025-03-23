@@ -1,6 +1,6 @@
 import { Future, ImageSource, ImageSourceAttributeConstants, ImageWrapping, Sound, TextureLoader } from "excalibur";
-import { loadFile } from "../../../helpers/filesLoader";
-import { SongData } from "../../../types/songs";
+import { SongData } from "../../types/songs";
+import { loadFile } from "./filesLoader";
 
 export class MusicFile extends Sound {
   song: SongData;

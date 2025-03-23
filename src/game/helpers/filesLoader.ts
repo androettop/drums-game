@@ -1,4 +1,4 @@
-import { SongData } from "../types/songs";
+import { SongData } from "../../types/songs";
 
 /**
  * Releases the resources used by a URL object

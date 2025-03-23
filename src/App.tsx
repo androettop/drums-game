@@ -1,9 +1,9 @@
 import { useState } from "react";
 import styles from "./App.module.css";
-import Highway from "./components/Highway/Highway";
 import SmallCover from "./components/SmallCover/SmallCover";
-import { loadAllSongs } from "./helpers/songLoader";
 import { SongData } from "./types/songs";
+import { loadAllSongs } from "./game/helpers/songLoader";
+import GameLoader from "./components/GameLoader/GameLoader";
 
 function App() {
   const [selectedSong, setSelectedSong] = useState<SongData | null>(null);
@@ -45,7 +45,7 @@ function App() {
   return (
     <>
       {selectedSong ? (
-        <Highway song={selectedSong} />
+        <GameLoader song={selectedSong} />
       ) : (
         <div className={styles.container}>
           <button

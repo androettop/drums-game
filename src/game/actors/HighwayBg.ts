@@ -1,7 +1,7 @@
 import { Actor, Engine, Sprite, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../config";
-import BaseNote from "./BaseNote";
-import { Resources } from "./resources";
+import BaseNote from "./Notes/BaseNote";
+import { Resources } from "../resources";
 
 class HighwayBg extends Actor {
   constructor() {
