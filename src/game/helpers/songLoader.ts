@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { SongData } from "../types/songs";
+import { SongData } from "../../types/songs";
 
 /**
  * Allows the user to select a folder of songs
