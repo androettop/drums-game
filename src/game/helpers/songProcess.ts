@@ -1,8 +1,9 @@
-import { vec } from "excalibur";
+import { Actor, ImageSource, vec } from "excalibur";
 import { EventData } from "../../types/songs";
 import BaseNote from "../actors/Notes/BaseNote";
 import { GAME_CONFIG } from "../config";
 import { Resources } from "../resources";
+import DividerNote from "../actors/Notes/DividerNote";
 
 export type ProcessedNote = {
   time: number;
@@ -106,4 +107,55 @@ export const createNoteActor = (note: ProcessedNote, currentTime: number) => {
   }
 
   return noteActor;
+};
+
+export const createDividerNoteActor = (instruments: string[]) => {
+  const dividerActors: Actor[] = [];
+  instruments.forEach((instrument, index) => {
+    if (instrument === "BP_Kick_C") {
+      return;
+    }
+
+    const posX =
+      (GAME_CONFIG.highwayWidth / instruments.length) * index +
+      GAME_CONFIG.highwayWidth / (instruments.length * 2) -
+      GAME_CONFIG.highwayWidth / 2;
+
+    const pos = vec(posX, -4);
+    let dividerImage: ImageSource | null = null;
+
+    switch (instrument) {
+      case "BP_HiHat_C":
+        dividerImage = Resources.DividerNoteCircleCyan;
+        break;
+      case "BP_Crash15_C":
+        dividerImage = Resources.DividerNoteCirclePurple;
+        break;
+      case "BP_Snare_C":
+        dividerImage = Resources.DividerNoteRectRed;
+        break;
+      case "BP_Tom1_C":
+        dividerImage = Resources.DividerNoteRectCyan;
+        break;
+      case "BP_Tom2_C":
+        dividerImage = Resources.DividerNoteRectGreen;
+        break;
+      case "BP_FloorTom_C":
+        dividerImage = Resources.DividerNoteRectPurple;
+        break;
+      case "BP_Crash17_C":
+        dividerImage = Resources.DividerNoteCircleOrange;
+        break;
+      case "BP_Ride17_C":
+        dividerImage = Resources.DividerNoteCircleYellow;
+        break;
+      default:
+        dividerImage = Resources.DividerNoteRectBase;
+        console.log("Unknown instrument: ", instrument);
+        break;
+    }
+    dividerActors.push(new DividerNote(pos, dividerImage));
+  });
+
+  return dividerActors;
 };

@@ -1,6 +1,7 @@
 import { Actor, Sprite, vec, Vector } from "excalibur";
 import { Resources } from "../resources";
 import { GAME_CONFIG } from "../config";
+import { createDividerNoteActor } from "../helpers/songProcess";
 
 class Divider extends Actor {
   instruments: string[];
@@ -22,6 +23,10 @@ class Divider extends Actor {
     this.graphics.use(Sprite.from(Resources.Divider));
 
     // put the divider note for each instrument
+    const dividerNoteActors = createDividerNoteActor(this.instruments);
+    dividerNoteActors.forEach((actor) => {
+      this.addChild(actor);
+    });
   }
 }
 
