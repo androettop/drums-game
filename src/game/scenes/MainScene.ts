@@ -1,7 +1,6 @@
-import { ImageSource, Scene } from "excalibur";
+import { ImageSource, Scene, Sound } from "excalibur";
 import Highway from "../actors/Highway";
 import Game from "../engine";
-import { MusicFile } from "../helpers/loaders";
 import { processNotesAndInstruments } from "../helpers/songProcess";
 
 class MainScene extends Scene {
@@ -19,7 +18,7 @@ class MainScene extends Scene {
       engine.song.events
     );
 
-    const mainTrack: MusicFile = engine.songTracks[0];
+    const mainTrack: Sound = engine.songTracks[0];
 
     // Add the Highway
     this.add(new Highway(notes, instruments, mainTrack));

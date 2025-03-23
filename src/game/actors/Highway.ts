@@ -1,7 +1,6 @@
-import { Actor, Sprite, Vector } from "excalibur";
+import { Actor, Sound, Sprite, Vector } from "excalibur";
 import { GAME_CONFIG } from "../config";
 import Game from "../engine";
-import { MusicFile } from "../helpers/loaders";
 import {
   createNoteActor,
   getBatchNumber,
@@ -11,7 +10,7 @@ import { Resources } from "../resources";
 import Divider from "./Divider";
 
 class Highway extends Actor {
-  mainTrack: MusicFile;
+  mainTrack: Sound;
   notes: Record<number, ProcessedNote[]> = {};
   instruments: string[] = [];
   lastBatchNumber: number = -1;
@@ -19,7 +18,7 @@ class Highway extends Actor {
   constructor(
     notes: Record<number, ProcessedNote[]>,
     instruments: string[],
-    mainTrack: MusicFile
+    mainTrack: Sound
   ) {
     super({
       pos: Vector.Zero,
