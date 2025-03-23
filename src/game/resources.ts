@@ -22,6 +22,7 @@ import dividerNoteRectRed from "../assets/DividerNoteRectRed.png";
 import dividerNoteRectBase from "../assets/DividerNoteRectBase.png";
 
 import divider from "../assets/Divider.png";
+import instrumentRailBorder from "../assets/InstrumentRailBorder.png";
 
 import highwayBg from "../assets/HighwayBg.png";
 
@@ -61,6 +62,7 @@ const dividerNoteRectRedImg = new ImageSource(dividerNoteRectRed);
 const dividerNoteRectBaseImg = new ImageSource(dividerNoteRectBase);
 
 const dividerImg = new ImageSource(divider);
+const instrumentRailBorderImg = new ImageSource(instrumentRailBorder);
 
 const highwayBgImg = new ImageSource(highwayBg);
 
@@ -87,6 +89,7 @@ export const Resources = {
   DividerNoteRectBase: dividerNoteRectBaseImg,
 
   Divider: dividerImg,
+  InstrumentRailBorder: instrumentRailBorderImg,
 
   HighwayBg: highwayBgImg,
 } as const;

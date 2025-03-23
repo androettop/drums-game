@@ -4,6 +4,7 @@ import BaseNote from "../actors/Notes/BaseNote";
 import { GAME_CONFIG } from "../config";
 import { Resources } from "../resources";
 import DividerNote from "../actors/Notes/DividerNote";
+import InstrumentRailBorder from "../actors/InstrumentRailBorder";
 
 export type ProcessedNote = {
   time: number;
@@ -109,7 +110,24 @@ export const createNoteActor = (note: ProcessedNote, currentTime: number) => {
   return noteActor;
 };
 
-export const createDividerNoteActor = (instruments: string[]) => {
+export const createRailBorderActors = (instruments: string[]) => {
+  const railActors: Actor[] = [];
+
+  for (let i = 1; i < instruments.length; i++) {
+    const posX =
+      (GAME_CONFIG.highwayWidth / instruments.length) * i -
+      GAME_CONFIG.highwayWidth / 2;
+    const pos = vec(
+      posX,
+      GAME_CONFIG.dividerPosition - GAME_CONFIG.highwayHeight / 2
+    );
+    railActors.push(new InstrumentRailBorder(pos));
+  }
+
+  return railActors;
+};
+
+export const createDividerNoteActors = (instruments: string[]) => {
   const dividerActors: Actor[] = [];
   instruments.forEach((instrument, index) => {
     if (instrument === "BP_Kick_C") {

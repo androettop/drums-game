@@ -7,7 +7,6 @@ class DividerNote extends Actor {
     super({
       pos,
       anchor: Vector.Half,
-      opacity: 1,
     });
     this.sprite = Sprite.from(imageSource);
   }
