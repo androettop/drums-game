@@ -1,5 +1,6 @@
 import { Color, Engine, ImageSource, Sound } from "excalibur";
 import { SongData } from "../types/songs";
+import { GAME_CONFIG } from "./config";
 import { ImageFile, MusicFile } from "./helpers/loaders";
 import { createLoader, Resources as NotesResources } from "./resources";
 import MainScene from "./scenes/MainScene";
@@ -11,13 +12,9 @@ class Game extends Engine {
   cover: ImageSource | null = null;
 
   constructor(canvas: HTMLCanvasElement, song: SongData) {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
     super({
       canvasElement: canvas,
-      resolution: { width: width, height: height },
-      viewport: { width: width, height: height },
+      resolution: { height: GAME_CONFIG.height, width: GAME_CONFIG.width },
       backgroundColor: Color.Black,
     });
 

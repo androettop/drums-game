@@ -1,4 +1,4 @@
-import { Actor, Sound, Sprite, Vector } from "excalibur";
+import { Actor, Sound, Sprite, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import {
@@ -21,7 +21,7 @@ class Highway extends Actor {
     mainTrack: Sound
   ) {
     super({
-      pos: Vector.Zero,
+      pos: vec(GAME_CONFIG.width / 2 - GAME_CONFIG.highwayWidth / 2, GAME_CONFIG.height / 2 - GAME_CONFIG.highwayHeight / 2),
       width: GAME_CONFIG.highwayWidth,
       height: GAME_CONFIG.highwayHeight,
       anchor: Vector.Zero,
