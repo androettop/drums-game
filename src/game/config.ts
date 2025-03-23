@@ -1,8 +1,8 @@
 export const GAME_CONFIG = {
-  width: 1600, // px
+  width: 675, // px
   height: 900, // px
   highwayWidth: 450, // px
-  highwayHeight: 800, // px
+  highwayHeight: 700, // px
   dividerPosition: 80, // px from the bottom of the highway
   instrumentsOrder: [
     "BP_HiHat_C",

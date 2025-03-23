@@ -5,6 +5,7 @@ import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import { processNotesAndInstruments } from "../helpers/songProcess";
 import { Resources } from "../resources";
+import ProgressBar from "../actors/ProgressBar";
 
 class MainScene extends Scene {
   counter: number = 0;
@@ -46,6 +47,9 @@ class MainScene extends Scene {
     );
 
     this.add(this.startBtn);
+
+    // Create the progress bar
+    this.add(new ProgressBar());
   }
 }
 

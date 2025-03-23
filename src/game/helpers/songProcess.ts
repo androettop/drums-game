@@ -108,7 +108,7 @@ export const createRailBorderActors = (instruments: string[]) => {
       GAME_CONFIG.highwayWidth / 2;
     const pos = vec(
       posX,
-      GAME_CONFIG.dividerPosition - GAME_CONFIG.highwayHeight / 2
+      GAME_CONFIG.dividerPosition - GAME_CONFIG.highwayHeight / 2 - 2
     );
     railActors.push(new InstrumentRailBorder(pos));
   }

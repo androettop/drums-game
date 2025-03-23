@@ -1,4 +1,4 @@
-import { DefaultLoader, ImageSource, Loadable } from "excalibur";
+import { DefaultLoader, ImageSource, ImageWrapping, Loadable } from "excalibur";
 
 import noteCircleCyan from "../assets/NoteCircleCyan.png";
 import noteCircleOrange from "../assets/NoteCircleOrange.png";
@@ -94,7 +94,7 @@ const StopBtnImg = new ImageSource(StopBtn);
 const StopOffBtnImg = new ImageSource(StopOffBtn);
 
 const ProgressBarEmptyImg = new ImageSource(ProgressBarEmpty);
-const ProgressBarFullImg = new ImageSource(ProgressBarFull);
+const ProgressBarFullImg = new ImageSource(ProgressBarFull, {wrapping: ImageWrapping.Repeat});
 
 export const Resources = {
   NoteCircleCyan: noteCircleCyanImg,
