@@ -21,7 +21,7 @@ class Highway extends Actor {
     mainTrack: Sound
   ) {
     super({
-      pos: vec(GAME_CONFIG.width / 2 - GAME_CONFIG.highwayWidth / 2, GAME_CONFIG.height / 2 - GAME_CONFIG.highwayHeight / 2),
+      pos: vec(GAME_CONFIG.width / 2 - GAME_CONFIG.highwayWidth / 2, 0),
       width: GAME_CONFIG.highwayWidth,
       height: GAME_CONFIG.highwayHeight,
       anchor: Vector.Zero,
@@ -34,13 +34,18 @@ class Highway extends Actor {
 
   public onPostUpdate(engine: Game, elapsed: number): void {
     super.onPostUpdate(engine, elapsed);
+
+    if (!this.mainTrack.isPlaying()) {
+      return;
+    }
+
     const notesDelay =
       (GAME_CONFIG.highwayHeight - GAME_CONFIG.dividerPosition) /
       GAME_CONFIG.notesSpeed /
       1000; // px/s
 
     const currentTime =
-      (this.mainTrack?.getPlaybackPosition() || 0) + notesDelay;
+      (this.mainTrack.getPlaybackPosition() || 0) + notesDelay;
 
     const batchNumber = getBatchNumber(currentTime);
 

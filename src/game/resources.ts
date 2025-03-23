@@ -136,4 +136,5 @@ export const Resources = {
   StopOffBtn: StopOffBtnImg,
 
   ProgressBarEmpty: ProgressBarEmptyImg,
+  ProgressBarFull: ProgressBarFullImg,
 } as const;
