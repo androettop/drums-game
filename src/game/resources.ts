@@ -1,4 +1,4 @@
-import { DefaultLoader, Loadable, ImageSource, ImageWrapping } from "excalibur";
+import { DefaultLoader, Loadable, ImageSource } from "excalibur";
 
 import noteCircleCyan from "../assets/NoteCircleCyan.png";
 import noteCircleOrange from "../assets/NoteCircleOrange.png";
@@ -36,9 +36,7 @@ const noteRectPurpleImg = new ImageSource(noteRectPurple);
 const noteRectRedImg = new ImageSource(noteRectRed);
 const noteKickImg = new ImageSource(noteKick);
 
-const highwayBgImg = new ImageSource(highwayBg, {
-  wrapping: { x: ImageWrapping.Clamp, y: ImageWrapping.Repeat },
-});
+const highwayBgImg = new ImageSource(highwayBg);
 
 export const Resources = {
   NoteCircleCyan: noteCircleCyanImg,

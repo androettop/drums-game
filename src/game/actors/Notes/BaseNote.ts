@@ -2,9 +2,6 @@ import { Actor, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../../config";
 
 class BaseNote extends Actor {
-  static ANIM_DURATION = 2000; // note anim duration in ms
-  static NOTE_SPEED = GAME_CONFIG.height / BaseNote.ANIM_DURATION;
-
   constructor(pos: Vector, z: number = 10) {
     super({
       pos,
@@ -14,12 +11,12 @@ class BaseNote extends Actor {
   }
 
   public onInitialize() {
-    const fixedDistance = GAME_CONFIG.height - this.pos.y;
-    const fixedAnimDuration = fixedDistance / BaseNote.NOTE_SPEED;
+    const fixedDistance = GAME_CONFIG.highwayHeight - this.pos.y;
+    const fixedAnimDuration = fixedDistance / GAME_CONFIG.notesSpeed;
 
     this.actions
       .moveTo({
-        pos: vec(this.pos.x, GAME_CONFIG.height),
+        pos: vec(this.pos.x, GAME_CONFIG.highwayHeight),
         duration: fixedAnimDuration,
       })
       .die();

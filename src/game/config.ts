@@ -1,6 +1,7 @@
 export const GAME_CONFIG = {
-  width: 450,
-  height: 800,
+  highwayWidth: 450, // px
+  highwayHeight: 800, // px
+  dividerPosition: 80, // px from the bottom of the highway
   instrumentsOrder: [
     "BP_HiHat_C",
     "BP_Crash15_C",
@@ -12,4 +13,6 @@ export const GAME_CONFIG = {
     "BP_Ride17_C",
     "BP_Ride20_C",
   ],
+  notesSpeed: 0.4, // px/ms
+  notesBatchSize: 4, // seconds
 };

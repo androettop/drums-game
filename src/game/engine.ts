@@ -1,7 +1,6 @@
 import { Color, Engine } from "excalibur";
 import { SongData } from "../types/songs";
 import { Resources as NotesResources } from "./resources";
-import { GAME_CONFIG } from "./config";
 import { ImageFile, MusicFile } from "./helpers/loaders";
 import { createLoader } from "./resources";
 import MainScene from "./scenes/MainScene";
@@ -13,15 +12,19 @@ class Game extends Engine {
   cover: ImageFile | null = null;
 
   constructor(canvas: HTMLCanvasElement, song: SongData) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
     super({
       canvasElement: canvas,
-      resolution: { width: GAME_CONFIG.width, height: GAME_CONFIG.height },
-      viewport: { width: GAME_CONFIG.width, height: GAME_CONFIG.height },
-      backgroundColor: Color.fromHex("#111111"),
+      resolution: { width: width, height: height },
+      viewport: { width: width, height: height },
+      backgroundColor: Color.Black,
     });
 
     this.song = song;
   }
+
   initialize() {
     this.songTracks = this.song.audioFileData.songTracks.map(
       (trackName) => new MusicFile(this.song, trackName)
