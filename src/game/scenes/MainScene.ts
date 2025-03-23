@@ -2,9 +2,7 @@ import { ImageSource, Scene } from "excalibur";
 import Highway from "../actors/Highway";
 import Game from "../engine";
 import { MusicFile } from "../helpers/loaders";
-import {
-  processNotes
-} from "../helpers/songProcess";
+import { processNotesAndInstruments } from "../helpers/songProcess";
 
 class MainScene extends Scene {
   counter: number = 0;
@@ -17,11 +15,14 @@ class MainScene extends Scene {
     const engine = this.engine as Game;
 
     // process notes to make it easier to use
-    const notes = processNotes(engine.song.events);
+    const { notes, instruments } = processNotesAndInstruments(
+      engine.song.events
+    );
+
     const mainTrack: MusicFile = engine.songTracks[0];
 
     // Add the Highway
-    this.add(new Highway(notes, mainTrack));
+    this.add(new Highway(notes, instruments, mainTrack));
 
     // start all tracks
     [...engine.songTracks, ...engine.drumTracks].forEach((track) => {

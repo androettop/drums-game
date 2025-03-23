@@ -8,13 +8,19 @@ import {
   ProcessedNote,
 } from "../helpers/songProcess";
 import { Resources } from "../resources";
+import Divider from "./Divider";
 
 class Highway extends Actor {
   mainTrack: MusicFile;
   notes: Record<number, ProcessedNote[]> = {};
+  instruments: string[] = [];
   lastBatchNumber: number = -1;
 
-  constructor(notes: Record<number, ProcessedNote[]>, mainTrack: MusicFile) {
+  constructor(
+    notes: Record<number, ProcessedNote[]>,
+    instruments: string[],
+    mainTrack: MusicFile
+  ) {
     super({
       pos: Vector.Zero,
       width: GAME_CONFIG.highwayWidth,
@@ -23,6 +29,7 @@ class Highway extends Actor {
       z: 0,
     });
     this.notes = notes;
+    this.instruments = instruments;
     this.mainTrack = mainTrack;
   }
 
@@ -51,6 +58,10 @@ class Highway extends Actor {
 
   public onInitialize() {
     this.graphics.use(Sprite.from(Resources.HighwayBg));
+
+    // Create the divider
+    const divider = new Divider(this.instruments);
+    this.addChild(divider);
   }
 }
 

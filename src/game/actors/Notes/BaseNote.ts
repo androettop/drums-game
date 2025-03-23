@@ -1,15 +1,19 @@
-import { Actor, vec, Vector } from "excalibur";
+import { Actor, ImageSource, Sprite, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../../config";
 import Game from "../../engine";
 
 class BaseNote extends Actor {
-  constructor(pos: Vector, z: number = 10) {
+  sprite: Sprite;
+
+  constructor(pos: Vector, imageSource: ImageSource, z: number = 10) {
     super({
       pos,
       anchor: Vector.Half,
       z,
       opacity: 1,
     });
+
+    this.sprite = Sprite.from(imageSource);
   }
 
   public onPostUpdate(engine: Game, elapsed: number): void {
@@ -38,6 +42,8 @@ class BaseNote extends Actor {
   }
 
   public onInitialize() {
+    this.graphics.use(this.sprite);
+
     const fixedDistance = GAME_CONFIG.highwayHeight - this.pos.y;
     const fixedAnimDuration = fixedDistance / GAME_CONFIG.notesSpeed;
 

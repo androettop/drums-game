@@ -1,16 +1,8 @@
 import { vec } from "excalibur";
-import BaseNote from "../actors/Notes/BaseNote";
-import Crash15Note from "../actors/Notes/Crash15Note";
-import Crash17Note from "../actors/Notes/Crash17Note";
-import FloorTomNote from "../actors/Notes/FloorTomNote";
-import HiHatNote from "../actors/Notes/HiHatNote";
-import KickNote from "../actors/Notes/KickNote";
-import Ride17Note from "../actors/Notes/Ride17Note";
-import SnareNote from "../actors/Notes/SnareNote";
-import Tom1Note from "../actors/Notes/Tom1Note";
-import Tom2Note from "../actors/Notes/Tom2Note";
-import { GAME_CONFIG } from "../config";
 import { EventData } from "../../types/songs";
+import BaseNote from "../actors/Notes/BaseNote";
+import { GAME_CONFIG } from "../config";
+import { Resources } from "../resources";
 
 export type ProcessedNote = {
   time: number;
@@ -22,9 +14,7 @@ export const getBatchNumber = (time: number | string): number => {
   return Math.floor(Number(time) / GAME_CONFIG.notesBatchSize);
 };
 
-export const processNotes = (
-  events: EventData[]
-): Record<number, ProcessedNote[]> => {
+export const processNotesAndInstruments = (events: EventData[]) => {
   const notes: Record<number, ProcessedNote[]> = {};
 
   // load instruments used in the song
@@ -64,7 +54,7 @@ export const processNotes = (
     notes[batchNumber].push(newNote);
   });
 
-  return notes;
+  return { notes, instruments };
 };
 
 export const createNoteActor = (note: ProcessedNote, currentTime: number) => {
@@ -74,35 +64,44 @@ export const createNoteActor = (note: ProcessedNote, currentTime: number) => {
 
   switch (note.class) {
     case "BP_HiHat_C":
-      noteActor = new HiHatNote(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteCircleCyan);
       break;
     case "BP_Crash15_C":
-      noteActor = new Crash15Note(vec(note.posX, posY));
+      noteActor = new BaseNote(
+        vec(note.posX, posY),
+        Resources.NoteCirclePurple
+      );
       break;
     case "BP_Snare_C":
-      noteActor = new SnareNote(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectRed);
       break;
     case "BP_Tom1_C":
-      noteActor = new Tom1Note(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectCyan);
       break;
     case "BP_Tom2_C":
-      noteActor = new Tom2Note(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectGreen);
       break;
     case "BP_FloorTom_C":
-      noteActor = new FloorTomNote(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectPurple);
       break;
     case "BP_Crash17_C":
-      noteActor = new Crash17Note(vec(note.posX, posY));
+      noteActor = new BaseNote(
+        vec(note.posX, posY),
+        Resources.NoteCircleOrange
+      );
       break;
     case "BP_Ride17_C":
-      noteActor = new Ride17Note(vec(note.posX, posY));
+      noteActor = new BaseNote(
+        vec(note.posX, posY),
+        Resources.NoteCircleYellow
+      );
       break;
     case "BP_Kick_C":
-      noteActor = new KickNote(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteKick, 8);
       break;
     default:
       console.log("Unknown note class: ", note.class);
-      noteActor = new BaseNote(vec(note.posX, posY));
+      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectBase);
       break;
   }
 
