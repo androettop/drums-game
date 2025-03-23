@@ -50,7 +50,7 @@ class Highway extends Actor {
       const notes = this.notes[batchNumber];
       if (notes) {
         notes.forEach((note) => {
-          this.addChild(createNoteActor(note, currentTime));
+          this.addChild(createNoteActor(note));
         });
       }
     }

@@ -59,51 +59,40 @@ export const processNotesAndInstruments = (events: EventData[]) => {
   return { notes, instruments };
 };
 
-export const createNoteActor = (note: ProcessedNote, currentTime: number) => {
-  const posY = (currentTime - note.time) * GAME_CONFIG.notesSpeed * 1000;
-
+export const createNoteActor = (note: ProcessedNote) => {
   let noteActor: BaseNote | null = null;
 
   switch (note.class) {
     case "BP_HiHat_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteCircleCyan);
+      noteActor = new BaseNote(note, Resources.NoteCircleCyan);
       break;
     case "BP_Crash15_C":
-      noteActor = new BaseNote(
-        vec(note.posX, posY),
-        Resources.NoteCirclePurple
-      );
+      noteActor = new BaseNote(note, Resources.NoteCirclePurple);
       break;
     case "BP_Snare_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectRed);
+      noteActor = new BaseNote(note, Resources.NoteRectRed);
       break;
     case "BP_Tom1_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectCyan);
+      noteActor = new BaseNote(note, Resources.NoteRectCyan);
       break;
     case "BP_Tom2_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectGreen);
+      noteActor = new BaseNote(note, Resources.NoteRectGreen);
       break;
     case "BP_FloorTom_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectPurple);
+      noteActor = new BaseNote(note, Resources.NoteRectPurple);
       break;
     case "BP_Crash17_C":
-      noteActor = new BaseNote(
-        vec(note.posX, posY),
-        Resources.NoteCircleOrange
-      );
+      noteActor = new BaseNote(note, Resources.NoteCircleOrange);
       break;
     case "BP_Ride17_C":
-      noteActor = new BaseNote(
-        vec(note.posX, posY),
-        Resources.NoteCircleYellow
-      );
+      noteActor = new BaseNote(note, Resources.NoteCircleYellow);
       break;
     case "BP_Kick_C":
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteKick, 8);
+      noteActor = new BaseNote(note, Resources.NoteKick, 8);
       break;
     default:
       console.log("Unknown note class: ", note.class);
-      noteActor = new BaseNote(vec(note.posX, posY), Resources.NoteRectBase);
+      noteActor = new BaseNote(note, Resources.NoteRectBase);
       break;
   }
 
