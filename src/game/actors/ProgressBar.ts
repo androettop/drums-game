@@ -28,10 +28,14 @@ class ProgressBar extends Actor {
     );
 
     // TODO: fix the image distortion
-    this.progressBarActor.scale.x = progress
+    this.progressBarActor.scale.x = progress;
   }
 
-  public onInitialize() {
+  private getRelativeX(x: number) {
+    return x - (GAME_CONFIG.width - GAME_CONFIG.highwayWidth) / 2;
+  }
+
+  public onInitialize(engine: Game) {
     this.graphics.use(Sprite.from(Resources.ProgressBarEmpty));
     this.progressBarActor = new Actor({
       pos: vec(-GAME_CONFIG.highwayWidth / 2, 0),
@@ -40,6 +44,30 @@ class ProgressBar extends Actor {
     this.progressBarActor.graphics.use(Sprite.from(Resources.ProgressBarFull));
 
     this.addChild(this.progressBarActor);
+
+    this.on("pointerdown", (event) => {
+      const posX = this.getRelativeX(event.screenPos.x);
+      const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
+      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
+        track.pause();
+        track.seek(progress * (track.duration || 0));
+      });
+    });
+
+    this.on("pointerdragmove", (event) => {
+      const posX = this.getRelativeX(event.screenPos.x);
+      const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
+
+      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
+        track.seek(progress * (track.duration || 0));
+      });
+    });
+
+    this.on("pointerup", () => {
+      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
+        track.play();
+      });
+    });
   }
 }
 

@@ -35,10 +35,6 @@ class Highway extends Actor {
   public onPostUpdate(engine: Game, elapsed: number): void {
     super.onPostUpdate(engine, elapsed);
 
-    if (!this.mainTrack.isPlaying()) {
-      return;
-    }
-
     const notesDelay =
       (GAME_CONFIG.highwayHeight - GAME_CONFIG.dividerPosition) /
       GAME_CONFIG.notesSpeed /
