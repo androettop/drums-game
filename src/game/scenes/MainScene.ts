@@ -6,6 +6,7 @@ import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import { processNotesAndInstruments } from "../helpers/songProcess";
 import { Resources } from "../resources";
+import CoverBg from "../actors/CoverBg";
 
 class MainScene extends Scene {
   counter: number = 0;
@@ -38,6 +39,9 @@ class MainScene extends Scene {
    */
   public onActivate() {
     const engine = this.engine as Game;
+
+    // Add cover bg
+    this.add(new CoverBg());
 
     // process notes to make it easier to use
     const { notes, instruments } = processNotesAndInstruments(
@@ -122,6 +126,15 @@ class MainScene extends Scene {
       }
     );
     this.add(drumsBtn);
+
+    // exit button
+    this.add(
+      new Button(
+        firstButtonPos.add(vec(buttonWidth * 4, 0)),
+        Resources.ExitBtn,
+        () => engine.exitHandler()
+      )
+    );
   }
 }
 

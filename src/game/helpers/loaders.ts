@@ -1,4 +1,4 @@
-import { Future, ImageSource, ImageSourceAttributeConstants, ImageWrapping, Sound, TextureLoader } from "excalibur";
+import { Future, ImageSource, ImageSourceAttributeConstants, ImageSourceOptions, ImageWrapping, Sound, TextureLoader } from "excalibur";
 import { SongData } from "../../types/songs";
 import { loadFile } from "./filesLoader";
 
@@ -23,8 +23,8 @@ export class MusicFile extends Sound {
 export class ImageFile extends ImageSource {
   song: SongData;
 
-  constructor(song: SongData, path: string) {
-    super(path);
+  constructor(song: SongData, path: string, options?: ImageSourceOptions) {
+    super(path, options);
     this.song = song;    
   }
    /**

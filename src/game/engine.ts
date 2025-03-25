@@ -10,8 +10,9 @@ class Game extends Engine {
   songTracks: Sound[] = [];
   drumTracks: Sound[] = [];
   cover: ImageSource | null = null;
+  exitHandler: () => void;
 
-  constructor(canvas: HTMLCanvasElement, song: SongData) {
+  constructor(canvas: HTMLCanvasElement, song: SongData, onExit: () => void) {
     super({
       canvasElement: canvas,
       resolution: { height: GAME_CONFIG.height, width: GAME_CONFIG.width },
@@ -19,6 +20,7 @@ class Game extends Engine {
     });
 
     this.song = song;
+    this.exitHandler = onExit;
   }
 
   public play() {
@@ -48,11 +50,11 @@ class Game extends Engine {
   }
 
   public muteDrums() {
-    this.drumTracks.forEach((track) => track.volume = 0);
+    this.drumTracks.forEach((track) => (track.volume = 0));
   }
 
   public unmuteDrums() {
-    this.drumTracks.forEach((track) => track.volume = 1);
+    this.drumTracks.forEach((track) => (track.volume = 1));
   }
 
   public getPlaybackPosition() {
@@ -77,7 +79,7 @@ class Game extends Engine {
 
     this.cover = new ImageFile(
       this.song,
-      this.song.recordingMetadata.coverImagePath
+      this.song.recordingMetadata.coverImagePath,
     );
     this.add("main", new MainScene());
     const loader = createLoader(NotesResources);

@@ -5,15 +5,16 @@ import { SongData } from "../../types/songs";
 
 interface GameLoaderProps {
   song: SongData;
+  onExit: () => void;
 }
 
-const GameLoader = ({ song }: GameLoaderProps) => {
+const GameLoader = ({ song, onExit }: GameLoaderProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<Game | null>(null);
 
   useEffect(() => {
     if (canvasRef.current && !engineRef.current) {
-      engineRef.current = new Game(canvasRef.current, song);
+      engineRef.current = new Game(canvasRef.current, song, onExit);
       engineRef.current.initialize();
     }
     const engine = engineRef.current;

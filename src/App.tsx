@@ -45,7 +45,9 @@ function App() {
   return (
     <>
       {selectedSong ? (
-        <GameLoader song={selectedSong} />
+        <GameLoader song={selectedSong} onExit={() => {
+          setSelectedSong(null);
+        }}/>
       ) : (
         <div className={styles.container}>
           <button
