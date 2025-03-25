@@ -1,10 +1,10 @@
 import { Color, Engine, ImageSource, Sound } from "excalibur";
 import { SongData } from "../types/songs";
 import { GAME_CONFIG } from "./config";
+import { applyBlur } from "./helpers/imageEffects";
 import { ImageFile, MusicFile } from "./helpers/loaders";
 import { createLoader, Resources as NotesResources } from "./resources";
 import MainScene from "./scenes/MainScene";
-import { applyBlur } from "./helpers/imageEffects";
 
 class Game extends Engine {
   song: SongData;
@@ -19,25 +19,26 @@ class Game extends Engine {
       canvasElement: canvas,
       resolution: { height: GAME_CONFIG.height, width: GAME_CONFIG.width },
       backgroundColor: Color.Black,
+      suppressConsoleBootMessage: true,
     });
 
     this.song = song;
     this.exitHandler = onExit;
   }
 
-  public play() {
+  public songPlay() {
     [...this.songTracks, ...this.drumTracks].forEach((track) => {
       track.play();
     });
   }
 
-  public pause() {
+  public songPause() {
     [...this.songTracks, ...this.drumTracks].forEach((track) => {
       track.pause();
     });
   }
 
-  public seek(progress: number) {
+  public songSeek(progress: number) {
     [...this.songTracks, ...this.drumTracks].forEach((track) => {
       track.seek(progress * (track.duration || 0));
     });
@@ -81,7 +82,7 @@ class Game extends Engine {
 
     this.cover = new ImageFile(
       this.song,
-      this.song.recordingMetadata.coverImagePath,
+      this.song.recordingMetadata.coverImagePath
     );
 
     this.coverBg = await applyBlur(this.cover);

@@ -1,12 +1,12 @@
 import { ImageSource, Scene, Sprite, vec } from "excalibur";
 import Button from "../actors/Button";
+import CoverBg from "../actors/CoverBg";
 import Highway from "../actors/Highway";
 import ProgressBar from "../actors/ProgressBar";
 import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import { processNotesAndInstruments } from "../helpers/songProcess";
 import { Resources } from "../resources";
-import CoverBg from "../actors/CoverBg";
 
 class MainScene extends Scene {
   counter: number = 0;
@@ -15,7 +15,7 @@ class MainScene extends Scene {
 
   public startSong(engine: Game) {
     // start all tracks
-    engine.play();
+    engine.songPlay();
   }
 
   public onPostUpdate(engine: Game): void {
@@ -74,7 +74,7 @@ class MainScene extends Scene {
       new Button(
         firstButtonPos,
         Resources.PlayBtn,
-        () => engine.play(),
+        () => engine.songPlay(),
         Resources.PlayOffBtn,
         () => engine.isPlaying()
       )
@@ -85,7 +85,7 @@ class MainScene extends Scene {
       new Button(
         firstButtonPos.add(vec(buttonWidth, 0)),
         Resources.PauseBtn,
-        () => engine.pause(),
+        () => engine.songPause(),
         Resources.PauseOffBtn,
         () => !engine.isPlaying()
       )
@@ -97,8 +97,8 @@ class MainScene extends Scene {
         firstButtonPos.add(vec(buttonWidth * 2, 0)),
         Resources.StopBtn,
         () => {
-          engine.pause();
-          engine.seek(0);
+          engine.songPause();
+          engine.songSeek(0);
         },
         Resources.StopOffBtn,
         () => engine.getPlaybackPosition() === 0 && !engine.isPlaying()
@@ -132,7 +132,10 @@ class MainScene extends Scene {
       new Button(
         firstButtonPos.add(vec(buttonWidth * 4, 0)),
         Resources.ExitBtn,
-        () => engine.exitHandler()
+        () => {
+          engine.songPause();
+          engine.exitHandler();
+        }
       )
     );
   }

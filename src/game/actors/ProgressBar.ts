@@ -22,10 +22,7 @@ class ProgressBar extends Actor {
     }
 
     const currentTime = engine.getPlaybackPosition();
-    const progress = Math.min(
-      currentTime / engine.getDuration(),
-      1
-    );
+    const progress = Math.min(currentTime / engine.getDuration(), 1);
 
     // TODO: fix the image distortion
     this.progressBarActor.scale.x = progress;
@@ -48,18 +45,18 @@ class ProgressBar extends Actor {
     this.on("pointerdown", (event) => {
       const posX = this.getRelativeX(event.screenPos.x);
       const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
-      engine.pause();
-      engine.seek(progress);
+      engine.songPause();
+      engine.songSeek(progress);
     });
 
     this.on("pointerdragmove", (event) => {
       const posX = this.getRelativeX(event.screenPos.x);
       const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
-      engine.seek(progress);
+      engine.songSeek(progress);
     });
 
     this.on("pointerup", () => {
-      engine.play();
+      engine.songPlay();
     });
   }
 }
