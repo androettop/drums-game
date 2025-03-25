@@ -1,11 +1,11 @@
-import { ImageSource, Scene, Sound, vec } from "excalibur";
+import { ImageSource, Scene, Sprite, vec } from "excalibur";
 import Button from "../actors/Button";
 import Highway from "../actors/Highway";
+import ProgressBar from "../actors/ProgressBar";
 import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import { processNotesAndInstruments } from "../helpers/songProcess";
 import { Resources } from "../resources";
-import ProgressBar from "../actors/ProgressBar";
 
 class MainScene extends Scene {
   counter: number = 0;
@@ -14,13 +14,23 @@ class MainScene extends Scene {
 
   public startSong(engine: Game) {
     // start all tracks
-    [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
-      track.play();
-    });
+    engine.play();
+  }
 
-    // remove the start button
-    this.startBtn?.kill();
-    this.startBtn = null;
+  public onPostUpdate(engine: Game): void {
+    if (!this.startBtn) {
+      return;
+    }
+
+    const musicStopped =
+      !engine.isPlaying() && engine.getPlaybackPosition() === 0;
+
+    // if the song is playing, remove the start button
+    if (musicStopped && !this.actors.includes(this.startBtn)) {
+      this.add(this.startBtn);
+    } else if (!musicStopped && this.actors.includes(this.startBtn)) {
+      this.remove(this.startBtn);
+    }
   }
 
   /**
@@ -34,10 +44,8 @@ class MainScene extends Scene {
       engine.song.events
     );
 
-    const mainTrack: Sound = engine.songTracks[0];
-
     // Add the Highway
-    this.add(new Highway(notes, instruments, mainTrack));
+    this.add(new Highway(notes, instruments));
 
     // Create the Start Button
     this.startBtn = new Button(
@@ -46,10 +54,74 @@ class MainScene extends Scene {
       () => this.startSong(engine)
     );
 
-    this.add(this.startBtn);
-
     // Create the progress bar
     this.add(new ProgressBar());
+
+    const buttonWidth = 80;
+
+    // Position of the first button
+    const firstButtonPos = vec(
+      (GAME_CONFIG.width - GAME_CONFIG.highwayWidth) / 2 + buttonWidth / 2,
+      GAME_CONFIG.highwayHeight + 60
+    );
+
+    // Create play button
+    this.add(
+      new Button(
+        firstButtonPos,
+        Resources.PlayBtn,
+        () => engine.play(),
+        Resources.PlayOffBtn,
+        () => engine.isPlaying()
+      )
+    );
+
+    // Create pause button
+    this.add(
+      new Button(
+        firstButtonPos.add(vec(buttonWidth, 0)),
+        Resources.PauseBtn,
+        () => engine.pause(),
+        Resources.PauseOffBtn,
+        () => !engine.isPlaying()
+      )
+    );
+
+    // Create stop button
+    this.add(
+      new Button(
+        firstButtonPos.add(vec(buttonWidth * 2, 0)),
+        Resources.StopBtn,
+        () => {
+          engine.pause();
+          engine.seek(0);
+        },
+        Resources.StopOffBtn,
+        () => engine.getPlaybackPosition() === 0 && !engine.isPlaying()
+      )
+    );
+
+    // Create drums button
+    const drumsBtn = new Button(
+      firstButtonPos.add(vec(buttonWidth * 3, 0)),
+      engine.hasDrums() && !engine.areDrumsMuted()
+        ? Resources.DrumsBtn
+        : Resources.DrumsOffBtn,
+      () => {
+        if (!engine.hasDrums()) {
+          return;
+        }
+
+        if (!engine.areDrumsMuted()) {
+          drumsBtn.graphics.use(Sprite.from(Resources.DrumsOffBtn));
+          engine.muteDrums();
+        } else {
+          drumsBtn.graphics.use(Sprite.from(Resources.DrumsBtn));
+          engine.unmuteDrums();
+        }
+      }
+    );
+    this.add(drumsBtn);
   }
 }
 

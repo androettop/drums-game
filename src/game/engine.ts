@@ -21,6 +21,52 @@ class Game extends Engine {
     this.song = song;
   }
 
+  public play() {
+    [...this.songTracks, ...this.drumTracks].forEach((track) => {
+      track.play();
+    });
+  }
+
+  public pause() {
+    [...this.songTracks, ...this.drumTracks].forEach((track) => {
+      track.pause();
+    });
+  }
+
+  public seek(progress: number) {
+    [...this.songTracks, ...this.drumTracks].forEach((track) => {
+      track.seek(progress * (track.duration || 0));
+    });
+  }
+
+  public hasDrums() {
+    return this.drumTracks.length > 0;
+  }
+
+  public areDrumsMuted() {
+    return this.drumTracks?.[0]?.volume === 0;
+  }
+
+  public muteDrums() {
+    this.drumTracks.forEach((track) => track.volume = 0);
+  }
+
+  public unmuteDrums() {
+    this.drumTracks.forEach((track) => track.volume = 1);
+  }
+
+  public getPlaybackPosition() {
+    return this.songTracks[0].getPlaybackPosition();
+  }
+
+  public getDuration() {
+    return this.songTracks[0].duration || 1;
+  }
+
+  public isPlaying() {
+    return this.songTracks[0].isPlaying();
+  }
+
   initialize() {
     this.songTracks = this.song.audioFileData.songTracks.map(
       (trackName) => new MusicFile(this.song, trackName)

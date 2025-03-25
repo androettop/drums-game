@@ -1,4 +1,4 @@
-import { Actor, Sound, Sprite, vec, Vector } from "excalibur";
+import { Actor, Sprite, vec, Vector } from "excalibur";
 import { GAME_CONFIG } from "../config";
 import Game from "../engine";
 import {
@@ -10,7 +10,6 @@ import { Resources } from "../resources";
 import Divider from "./Divider";
 
 class Highway extends Actor {
-  mainTrack: Sound;
   notes: Record<number, ProcessedNote[]> = {};
   instruments: string[] = [];
   lastBatchNumber: number = -1;
@@ -18,7 +17,6 @@ class Highway extends Actor {
   constructor(
     notes: Record<number, ProcessedNote[]>,
     instruments: string[],
-    mainTrack: Sound
   ) {
     super({
       pos: vec(GAME_CONFIG.width / 2 - GAME_CONFIG.highwayWidth / 2, 0),
@@ -29,7 +27,6 @@ class Highway extends Actor {
     });
     this.notes = notes;
     this.instruments = instruments;
-    this.mainTrack = mainTrack;
   }
 
   public onPostUpdate(engine: Game, elapsed: number): void {
@@ -41,7 +38,7 @@ class Highway extends Actor {
       1000; // px/s
 
     const currentTime =
-      (this.mainTrack.getPlaybackPosition() || 0) + notesDelay;
+      (engine.getPlaybackPosition() || 0) + notesDelay;
 
     const batchNumber = getBatchNumber(currentTime);
 

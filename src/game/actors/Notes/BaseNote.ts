@@ -21,7 +21,7 @@ class BaseNote extends Actor {
   public onPostUpdate(engine: Game, elapsed: number): void {
     super.onPostUpdate(engine, elapsed);
 
-    const currentTime = engine.songTracks[0].getPlaybackPosition();
+    const currentTime = engine.getPlaybackPosition();
     const distanceToDivider =
       (currentTime - this.noteTime) * GAME_CONFIG.notesSpeed * 1000;
 

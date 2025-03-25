@@ -21,9 +21,9 @@ class ProgressBar extends Actor {
       return;
     }
 
-    const currentTime = engine.songTracks[0].getPlaybackPosition();
+    const currentTime = engine.getPlaybackPosition();
     const progress = Math.min(
-      currentTime / (engine.songTracks[0].duration || 1),
+      currentTime / engine.getDuration(),
       1
     );
 
@@ -48,25 +48,18 @@ class ProgressBar extends Actor {
     this.on("pointerdown", (event) => {
       const posX = this.getRelativeX(event.screenPos.x);
       const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
-      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
-        track.pause();
-        track.seek(progress * (track.duration || 0));
-      });
+      engine.pause();
+      engine.seek(progress);
     });
 
     this.on("pointerdragmove", (event) => {
       const posX = this.getRelativeX(event.screenPos.x);
       const progress = Math.min(posX / GAME_CONFIG.highwayWidth, 1);
-
-      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
-        track.seek(progress * (track.duration || 0));
-      });
+      engine.seek(progress);
     });
 
     this.on("pointerup", () => {
-      [...engine.songTracks, ...engine.drumTracks].forEach((track) => {
-        track.play();
-      });
+      engine.play();
     });
   }
 }
