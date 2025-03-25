@@ -4,12 +4,14 @@ import { GAME_CONFIG } from "./config";
 import { ImageFile, MusicFile } from "./helpers/loaders";
 import { createLoader, Resources as NotesResources } from "./resources";
 import MainScene from "./scenes/MainScene";
+import { applyBlur } from "./helpers/imageEffects";
 
 class Game extends Engine {
   song: SongData;
   songTracks: Sound[] = [];
   drumTracks: Sound[] = [];
   cover: ImageSource | null = null;
+  coverBg: ImageSource | null = null;
   exitHandler: () => void;
 
   constructor(canvas: HTMLCanvasElement, song: SongData, onExit: () => void) {
@@ -69,7 +71,7 @@ class Game extends Engine {
     return this.songTracks[0].isPlaying();
   }
 
-  initialize() {
+  async initialize() {
     this.songTracks = this.song.audioFileData.songTracks.map(
       (trackName) => new MusicFile(this.song, trackName)
     );
@@ -81,11 +83,14 @@ class Game extends Engine {
       this.song,
       this.song.recordingMetadata.coverImagePath,
     );
+
+    this.coverBg = await applyBlur(this.cover);
     this.add("main", new MainScene());
     const loader = createLoader(NotesResources);
     loader.addResources(this.songTracks);
     loader.addResources(this.drumTracks);
     loader.addResource(this.cover);
+    loader.addResource(this.coverBg);
     this.start(loader);
   }
 

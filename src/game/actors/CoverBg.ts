@@ -11,9 +11,9 @@ class CoverBg extends Actor {
   }
 
   public onInitialize(engine: Game) {
-    if (engine.cover) { 
+    if (engine.coverBg) { 
       this.graphics.use(
-        Sprite.from(engine.cover)
+        Sprite.from(engine.coverBg)
       );
 
       // Scale the cover to fit the screen, cover effect.
