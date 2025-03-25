@@ -61,7 +61,7 @@ class MainScene extends Scene {
     // Create the progress bar
     this.add(new ProgressBar());
 
-    const buttonWidth = 80;
+    const buttonWidth = 90;
 
     // Position of the first button
     const firstButtonPos = vec(
