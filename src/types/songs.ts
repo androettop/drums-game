@@ -43,3 +43,62 @@ export type SongData = {
     folderName?: string,
     folderHandle?: FileSystemDirectoryHandle
 }
+
+// Types for API-based song integration
+export type APISong = {
+    id: string;
+    title: string;
+    artist: string;
+    author?: string;
+    uploader?: string;
+    submissionDate?: string;
+    difficulties: string[];
+    downloadCount?: number;
+    url: string;
+    albumArt?: string;
+    description?: string;
+}
+
+export type APIPagination = {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
+export type APISearchInfo = {
+    query: string;
+    resultsCount: number;
+    searchTime: string;
+}
+
+export type APISongsResponse = {
+    data: APISong[];
+    pagination: APIPagination;
+    timestamp: string;
+}
+
+export type APISearchResponse = {
+    data: APISong[];
+    search: APISearchInfo;
+    pagination: APIPagination;
+    timestamp: string;
+}
+
+export type APIConfig = {
+    baseUrl: string;
+}
+
+// Extended SongData for zip-based songs
+export type SongDataWithZip = SongData & {
+    zipBlob?: Blob;
+    zipEntries?: Map<string, ZipEntry>;
+}
+
+export type ZipEntry = {
+    name: string;
+    data: Uint8Array;
+    isDirectory: boolean;
+}
