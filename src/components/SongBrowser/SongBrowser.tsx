@@ -88,6 +88,8 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
   };
 
   const handleSongClick = async (song: APISong) => {
+    if (downloadingZip) return; // Prevent clicking while downloading
+    
     setDownloadingZip(true);
     setError(null);
     try {
@@ -166,10 +168,11 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Search songs, artists, or authors..."
+            disabled={downloadingZip}
             className={styles.searchInput}
           />
-          <button onClick={handleSearch} className={styles.searchButton}>
-            Search
+          <button onClick={handleSearch} disabled={downloadingZip} className={styles.searchButton}>
+            {downloadingZip ? 'Downloading...' : 'Search'}
           </button>
         </div>
       </div>
@@ -188,7 +191,11 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
 
       <div className={styles.songsList}>
         {songs.map((song) => (
-          <div key={song.id} className={styles.songCard} onClick={() => handleSongClick(song)}>
+          <div 
+            key={song.id} 
+            className={`${styles.songCard} ${downloadingZip ? styles.disabled : ''}`}
+            onClick={() => !downloadingZip && handleSongClick(song)}
+          >
             {song.albumArt && (
               <img 
                 src={song.albumArt} 
@@ -226,10 +233,10 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
         <div className={styles.loadMoreContainer}>
           <button 
             onClick={loadMoreSongs} 
-            disabled={loading}
+            disabled={loading || downloadingZip}
             className={styles.loadMoreButton}
           >
-            {loading ? 'Loading...' : 'Load More Songs'}
+            {loading ? 'Loading...' : downloadingZip ? 'Downloading...' : 'Load More Songs'}
           </button>
         </div>
       )}

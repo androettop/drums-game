@@ -119,6 +119,34 @@
   transform: translateY(-2px);
 }
 
+.songCard.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #2a2a2a;
+}
+
+.songCard.disabled .albumArt {
+  filter: grayscale(100%);
+}
+
+.songCard.disabled .songInfo {
+  color: #666;
+}
+
+.songCard.disabled .songTitle {
+  color: #888;
+}
+
+.songCard.disabled .songArtist {
+  color: #666;
+}
+
+.songCard.disabled .difficultyTag {
+  background: #444;
+  color: #888;
+}
+
 .albumArt {
   width: 100%;
   height: 200px;
