@@ -38,7 +38,7 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
       const response: APISongsResponse = await fetchSongs(1, 20);
       setSongs(response.data);
       setCurrentPage(1);
-      setHasMore(response.pagination.hasNext);
+      setHasMore(response.pagination.hasMore);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load songs');
     } finally {
@@ -58,7 +58,7 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
       const response: APISearchResponse = await searchSongs(searchQuery, 1, 20);
       setSongs(response.data);
       setCurrentPage(1);
-      setHasMore(response.pagination.hasNext);
+      setHasMore(response.pagination.hasMore);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search songs');
     } finally {
@@ -79,7 +79,7 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
       
       setSongs(prev => [...prev, ...response.data]);
       setCurrentPage(nextPage);
-      setHasMore(response.pagination.hasNext);
+      setHasMore(response.pagination.hasMore);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load more songs');
     } finally {

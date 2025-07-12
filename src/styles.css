@@ -20,3 +20,7 @@ a {
     color: #7219bf;
     text-decoration: none;
 }
+
+canvas {
+    margin: auto;
+}

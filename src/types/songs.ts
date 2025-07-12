@@ -64,8 +64,7 @@ export type APIPagination = {
     limit: number;
     total: number;
     totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
+    hasMore: boolean;
 }
 
 export type APISearchInfo = {
