@@ -4,6 +4,8 @@ Guitar hero like game for drums, using [excalibur](https://excaliburjs.com).
 
 Compatible with [paradiddle](https://paradiddleapp.com) songs.
 
+You need an api to provide the songs, the api should follow this openapi spec: [drums-game-api](./sample-api.yaml).
+
 <img src="https://github.com/user-attachments/assets/8736ada1-cfd4-48a9-ae40-98f9ae07bad7" height="300"/>
 
 ## Demo

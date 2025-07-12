@@ -1,0 +1,295 @@
+openapi: 3.0.0
+info:
+  title: Songs API
+  version: 1.0.0
+  description: A REST API for accessing songs metadata and charts for https://github.com/androettop/drums-game
+  contact:
+    name: API Support
+    email: pablo@androetto.dev
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:3000
+    description: Development server
+components:
+  schemas:
+    Song:
+      type: object
+      required:
+        - title
+        - artist
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+          example: 550e8400-e29b-41d4-a716-446655440000
+        title:
+          type: string
+          description: Song title
+          example: Symphony No. 5
+        artist:
+          type: string
+          description: Composer name
+          example: Ludwig van Beethoven
+        author:
+          type: string
+          description: Map/chart author
+          example: ClassicalCharts.org
+        uploader:
+          type: string
+          description: User who uploaded the map
+          example: b9f0c4e2-18a2-4e4e-8436-3d8f8d8e1b1a
+        submissionDate:
+          type: string
+          format: date-time
+          description: Date when the map was submitted
+          example: "2025-07-01T10:00:00Z"
+        downloadCount:
+          type: integer
+          description: Number of downloads
+          example: 432
+        albumArt:
+          type: string
+          description: Album art filename
+          example: beethoven5.jpg
+        complexity:
+          type: string
+          description: Song complexity level
+          example: Advanced
+        difficulties:
+          type: array
+          items:
+            type: string
+          description: Available difficulty levels
+          example:
+            - Beginner
+            - Intermediate
+            - Advanced
+        description:
+          type: string
+          description: Song description
+          example: A dramatic and iconic symphonic opening from the Classical era.
+        favorites:
+          type: integer
+          description: Number of favorites/likes
+          example: 120
+        url:
+          type: string
+          format: uri
+          description: Direct URL to the map
+          example: http://localhost:3000/maps/550e8400-e29b-41d4-a716-446655440000
+    ApiResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Song"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        meta:
+          $ref: "#/components/schemas/Meta"
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 200
+        hasMore:
+          type: boolean
+          example: true
+    Meta:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Data source
+          example: Songs API
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-07-01T12:00:00Z"
+        endpoint:
+          type: string
+          format: uri
+          example: http://localhost:3000/api/maps
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-07-01T12:00:00Z"
+        uptime:
+          type: number
+          example: 123456
+        version:
+          type: string
+          example: 1.0.0
+        environment:
+          type: string
+          example: development
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Validation Error
+        message:
+          type: string
+          example: Invalid query parameter
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-07-01T12:00:00Z"
+        code:
+          type: string
+          example: INVALID_PARAMETER
+paths:
+  /:
+    get:
+      summary: Get API information
+      tags:
+        - Info
+      responses:
+        "200":
+          description: API information and usage examples
+  /health:
+    get:
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /songs:
+    get:
+      summary: Get paginated songs
+      tags:
+        - Songs
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of songs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /songs/search:
+    get:
+      summary: Search songs by query
+      tags:
+        - Songs
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Invalid query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /songs/{id}/download:
+    get:
+      summary: Download a song map by ID
+      tags:
+        - Songs
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Song map streamed
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid song ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Song not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "503":
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+tags:
+  - name: Songs
+    description: Endpoints for song metadata
+  - name: Health
+    description: API health monitoring
+  - name: Info
+    description: General information about the API
