@@ -190,7 +190,16 @@ export const SongBrowser: React.FC<SongBrowserProps> = ({ onSongSelect }) => {
         {songs.map((song) => (
           <div key={song.id} className={styles.songCard} onClick={() => handleSongClick(song)}>
             {song.albumArt && (
-              <img src={song.albumArt} alt={song.title} className={styles.albumArt} />
+              <img 
+                src={song.albumArt} 
+                alt={song.title} 
+                className={styles.albumArt}
+                onError={(e) => {
+                  // Hide image if it fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
             )}
             <div className={styles.songInfo}>
               <h3 className={styles.songTitle}>{song.title}</h3>

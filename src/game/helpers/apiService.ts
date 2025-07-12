@@ -77,24 +77,16 @@ export const searchSongs = async (
 };
 
 /**
- * Gets the download URL for a song by its ID
- */
-export const getSongDownloadUrl = (songId: string): string => {
-  return `https://paradb.net/api/maps/${songId}/download`;
-};
-
-/**
- * Downloads a song zip file using the song ID
+ * Downloads a song zip file using the API endpoint
  */
 export const downloadSongZip = async (songId: string): Promise<Blob> => {
+  const config = getAPIConfig();
+  const url = `${config.baseUrl}/songs/${songId}/download`;
+
   try {
-    const downloadUrl = getSongDownloadUrl(songId);
-    const response = await fetch(downloadUrl, {
+    const response = await fetch(url, {
       method: 'GET',
       redirect: 'follow', // Follow redirects automatically
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
     });
     
     if (!response.ok) {

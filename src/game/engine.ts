@@ -1,4 +1,4 @@
-import { Color, Engine, ImageSource, Sound } from "excalibur";
+import { Color, DisplayMode, Engine, ImageSource, ScrollPreventionMode, Sound } from "excalibur";
 import { SongData } from "../types/songs";
 import { GAME_CONFIG } from "./config";
 import { applyBlur } from "./helpers/imageEffects";
@@ -20,6 +20,8 @@ class Game extends Engine {
       resolution: { height: GAME_CONFIG.height, width: GAME_CONFIG.width },
       backgroundColor: Color.Black,
       suppressConsoleBootMessage: true,
+      scrollPreventionMode: ScrollPreventionMode.None,
+      displayMode: DisplayMode.FitContainer,
     });
 
     this.song = song;

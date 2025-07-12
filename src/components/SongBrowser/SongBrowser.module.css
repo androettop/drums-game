@@ -107,6 +107,16 @@
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 12px;
+  background: #222;
+  display: block;
+}
+
+.albumArt[style*="display: none"] {
+  display: none !important;
+}
+
+.songCard:has(.albumArt[style*="display: none"]) .songInfo {
+  padding-top: 0;
 }
 
 .songInfo {
